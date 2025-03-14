@@ -1,0 +1,597 @@
+{% extends "base.html" %}
+
+{% block title %}Schedule Management - Email Automation System{% endblock %}
+
+{% block page_title %}Schedule Management{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('new_campaign') }}" class="btn btn-primary">
+    <i class="fas fa-plus me-1"></i> New Campaign
+</a>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .date-header {
+        background-color: #f8f9fa;
+        padding: 8px 15px;
+        margin-bottom: 15px;
+        border-radius: 4px;
+        border-left: 5px solid #007bff;
+    }
+    
+    .countdown-timer {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        padding: 3px 8px;
+        border-radius: 3px;
+        display: inline-block;
+        min-width: 80px;
+        text-align: center;
+    }
+    
+    .countdown-display-large {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        font-size: 24px;
+        padding: 10px;
+        background-color: #198754;
+        color: white;
+        border-radius: 5px;
+        min-width: 150px;
+        text-align: center;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.7; }
+        100% { opacity: 1; }
+    }
+    
+    .countdown-timer.bg-warning {
+        animation: pulse 1s infinite;
+    }
+    
+    .countdown-timer.bg-danger {
+        animation: pulse 0.5s infinite;
+    }
+    
+    .time-slot {
+        border-left: 3px solid #0d6efd;
+        padding-left: 15px;
+        margin-bottom: 10px;
+    }
+    
+    .email-card {
+        transition: all 0.2s ease;
+    }
+    
+    .email-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    
+    .reschedule-form {
+        display: none;
+    }
+    
+    .schedule-time {
+        font-size: 1rem;
+        font-weight: bold;
+        color: #0d6efd;
+        background-color: #e7f1ff;
+        padding: 5px 10px;
+        border-radius: 5px;
+        border-left: 3px solid #0d6efd;
+    }
+    
+    .time-info {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 15px;
+    }
+    
+    .schedule-table {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    
+    .schedule-table td {
+        padding: 8px;
+        vertical-align: middle;
+    }
+    
+    .schedule-table .time-column {
+        width: 20%;
+        font-weight: bold;
+        border-right: 1px solid #dee2e6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Scheduled Emails Overview</h5>
+            </div>
+            <div class="card-body">
+                {% if sorted_dates %}
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i> This page shows all pending emails organized by their scheduled date. You can reschedule emails by clicking the "Reschedule" button.
+                </div>
+                
+                <div class="alert alert-primary">
+                    <h6><i class="fas fa-clock me-2"></i>About Email Sending Times</h6>
+                    <p class="mb-0">Emails are sent with a sequential time gap. For example, with a 2-minute gap:</p>
+                    <ul class="mb-0 mt-2">
+                        <li>First email from Account A: 16:07</li>
+                        <li>Second email from Account A: 16:09 (gap: 2 min)</li>
+                        <li>First email from Account B: 16:07</li>
+                        <li>Second email from Account B: 16:09 (gap: 2 min)</li>
+                    </ul>
+                    <p class="mt-2 mb-0">Each account processes its emails sequentially with the configured time gap. <strong>The times shown below are the actual sending times for each email.</strong></p>
+                </div>
+                
+                <div class="alert alert-danger">
+                    <h6><i class="fas fa-exclamation-triangle me-2"></i>REAL EMAIL SENDING ACTIVE</h6>
+                    <p class="mb-0"><strong>WARNING:</strong> This system is configured to send REAL emails to the recipients listed below. Emails will be sent using your actual email accounts when they reach their scheduled time.</p>
+                </div>
+                
+                <div class="alert alert-success mb-4">
+                    <div class="d-flex align-items-center">
+                        <div class="flex-grow-1">
+                            <h6><i class="fas fa-stopwatch me-2"></i>Next Email Countdown</h6>
+                            <p class="mb-0" id="global-countdown-message">Calculating next email sending time...</p>
+                        </div>
+                        <div>
+                            <div class="countdown-display-large" id="global-countdown">
+                                <span id="global-countdown-hours">00</span>:<span id="global-countdown-minutes">00</span>:<span id="global-countdown-seconds">00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fas fa-calendar-day me-2"></i>Email Sending Schedule (2-min gaps)</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th style="width: 10%">#</th>
+                                        <th style="width: 20%">Sending Time</th>
+                                        <th style="width: 30%">Recipient</th>
+                                        <th style="width: 20%">From Account</th>
+                                        <th style="width: 20%">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% set counter = 1 %}
+                                    {% for date in sorted_dates %}
+                                        {% for email in emails_by_date[date]|sort(attribute='scheduled_at') %}
+                                        <tr>
+                                            <td class="align-middle">{{ counter }}</td>
+                                            <td class="align-middle">
+                                                <span class="d-block fw-bold text-primary">{{ email_time_info[email.id]['sequential_time'] }}</span>
+                                                <small class="text-muted">{{ email.scheduled_at.strftime('%Y-%m-%d') }}</small>
+                                                <small class="d-block">
+                                                    <span class="badge bg-secondary">
+                                                        <i class="fas fa-at me-1"></i> {{ email_time_info[email.id]['account_email'] }}
+                                                    </span>
+                                                </small>
+                                                <div class="mt-1">
+                                                    <span class="badge bg-success countdown-timer" data-send-time="{{ email_time_info[email.id]['sequential_time_iso'] }}" data-email-id="{{ email.id }}">
+                                                        <i class="fas fa-clock me-1"></i> <span class="countdown-display">{{ email_time_info[email.id]['time_remaining'] }}</span>
+                                                    </span>
+                                                </div>
+                                                {% if email_time_info[email.id]['position'] > 1 %}
+                                                <span class="badge bg-info" title="Time gap from previous email">
+                                                    <i class="fas fa-stopwatch me-1"></i> {{ email_time_info[email.id]['gap_minutes'] }} min gap
+                                                </span>
+                                                {% endif %}
+                                            </td>
+                                            <td class="align-middle">{{ email.recipient.email }}</td>
+                                            <td class="align-middle">{{ email.account.email }}</td>
+                                            <td class="align-middle">
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="{{ url_for('view_email', id=email.id) }}" class="btn btn-outline-primary">
+                                                        <i class="fas fa-eye"></i> View
+                                                    </a>
+                                                    <button type="button" class="btn btn-outline-secondary reschedule-btn" data-email-id="{{ email.id }}">
+                                                        <i class="fas fa-calendar-alt"></i> Reschedule
+                                                    </button>
+                                                    
+                                                    {% if email.status.value == 'pending' %}
+                                                    <form action="{{ url_for('pause_email', id=email.id) }}" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-outline-warning">
+                                                            <i class="fas fa-pause"></i> Pause
+                                                        </button>
+                                                    </form>
+                                                    {% elif email.status.value == 'paused' %}
+                                                    <form action="{{ url_for('resume_email', id=email.id) }}" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-outline-info">
+                                                            <i class="fas fa-play"></i> Resume
+                                                        </button>
+                                                    </form>
+                                                    {% endif %}
+                                                    
+                                                    <form action="{{ url_for('send_email_now', id=email.id) }}" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-outline-success">
+                                                            <i class="fas fa-paper-plane"></i> Send Now
+                                                        </button>
+                                                    </form>
+                                                    <button type="button" class="btn btn-outline-danger delete-email-btn" data-email-id="{{ email.id }}" data-recipient="{{ email.recipient.email }}">
+                                                        <i class="fas fa-trash"></i> Delete
+                                                    </button>
+                                                </div>
+                                                
+                                                <!-- Reschedule Form -->
+                                                <div class="reschedule-form mt-2" id="reschedule-form-{{ email.id }}">
+                                                    <form action="{{ url_for('reschedule_email_route', id=email.id) }}" method="post">
+                                                        <div class="row g-2">
+                                                            <div class="col-6">
+                                                                <input type="date" class="form-control form-control-sm" name="scheduled_date" required>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <input type="time" class="form-control form-control-sm" name="scheduled_time" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2">
+                                                            <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                                            <button type="button" class="btn btn-sm btn-secondary cancel-reschedule" data-email-id="{{ email.id }}">Cancel</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% set counter = counter + 1 %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <h5 class="mb-3">Detailed Email Cards</h5>
+                
+                <div class="schedule-timeline">
+                    {% for date in sorted_dates %}
+                    <div class="date-section mb-4">
+                        <div class="date-header">
+                            <i class="fas fa-calendar-day me-2"></i> {{ date }}
+                            <span class="badge bg-primary ms-2">{{ emails_by_date[date]|length }} emails</span>
+                        </div>
+                        
+                        <div class="emails-container">
+                            {% for email in emails_by_date[date] %}
+                            <div class="time-slot">
+                                <div class="card email-card mb-3">
+                                    <div class="card-header bg-light">
+                                        <table class="schedule-table">
+                                            <tr>
+                                                <td class="time-column">
+                                                    <div class="schedule-time">
+                                                        <i class="fas fa-clock me-1"></i> {{ email_time_info[email.id]['sequential_time'] }}
+                                                        <small class="d-block text-muted">
+                                                            <i class="fas fa-at me-1"></i> {{ email_time_info[email.id]['account_email'] }}
+                                                        </small>
+                                                        <small class="d-block mt-1">
+                                                            <span class="countdown-timer bg-success" 
+                                                                  data-send-time="{{ email_time_info[email.id]['sequential_time_iso'] }}" 
+                                                                  data-email-id="{{ email.id }}">00:00:00</span>
+                                                        </small>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <strong>To:</strong> {{ email.recipient.email }}
+                                                            {% if email_time_info[email.id]['position'] > 1 %}
+                                                            <span class="badge bg-info ms-2" title="Time gap from previous email">
+                                                                <i class="fas fa-stopwatch me-1"></i> {{ email_time_info[email.id]['gap_minutes'] }} min gap
+                                                            </span>
+                                                            {% endif %}
+                                                        </div>
+                                                        <span class="badge bg-warning">Pending</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <p class="mb-1"><strong>From:</strong> {{ email.account.email }}</p>
+                                                <p class="mb-0"><strong>Subject:</strong> {{ email.subject }}</p>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <p class="mb-1"><strong>Template:</strong> {{ email.template.name if email.template else 'Custom Email' }}</p>
+                                                <p class="mb-1"><strong>Created:</strong> {{ email.created_at.strftime('%Y-%m-%d %H:%M') }}</p>
+                                                <p class="mb-0">
+                                                    <strong>Follow-up:</strong> 
+                                                    {% if email.is_follow_up %}
+                                                    Yes (to email #{{ email.parent_email_id }})
+                                                    {% else %}
+                                                    No
+                                                    {% endif %}
+                                                </p>
+                                            </div>
+                                            <div class="col-md-3 text-end">
+                                                <div class="btn-group" role="group">
+                                                    <a href="{{ url_for('view_email', id=email.id) }}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <button class="btn btn-sm btn-outline-secondary reschedule-btn" data-email-id="{{ email.id }}">
+                                                        <i class="fas fa-clock"></i>
+                                                    </button>
+                                                    
+                                                    {% if email.status.value == 'pending' %}
+                                                    <form action="{{ url_for('pause_email', id=email.id) }}" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-sm btn-outline-warning">
+                                                            <i class="fas fa-pause"></i>
+                                                        </button>
+                                                    </form>
+                                                    {% elif email.status.value == 'paused' %}
+                                                    <form action="{{ url_for('resume_email', id=email.id) }}" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-sm btn-outline-info">
+                                                            <i class="fas fa-play"></i>
+                                                        </button>
+                                                    </form>
+                                                    {% endif %}
+                                                    
+                                                    <form action="{{ url_for('send_email_now', id=email.id) }}" method="post" class="d-inline">
+                                                        <button type="submit" class="btn btn-sm btn-outline-success">
+                                                            <i class="fas fa-paper-plane"></i>
+                                                        </button>
+                                                    </form>
+                                                    <button type="button" class="btn btn-sm btn-outline-danger delete-email-btn" data-email-id="{{ email.id }}" data-recipient="{{ email.recipient.email }}">
+                                                        <i class="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </div>
+                                                
+                                                <!-- Reschedule Form -->
+                                                <div class="reschedule-form mt-3" id="reschedule-form-{{ email.id }}">
+                                                    <form action="{{ url_for('reschedule_email_route', id=email.id) }}" method="post">
+                                                        <div class="row g-2">
+                                                            <div class="col-md-6">
+                                                                <input type="date" class="form-control form-control-sm" name="scheduled_date" required>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <input type="time" class="form-control form-control-sm" name="scheduled_time" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-2">
+                                                            <button type="submit" class="btn btn-sm btn-primary">Save</button>
+                                                            <button type="button" class="btn btn-sm btn-secondary cancel-reschedule" data-email-id="{{ email.id }}">Cancel</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="fas fa-calendar-alt fa-4x text-muted"></i>
+                    </div>
+                    <h4 class="text-muted">No Scheduled Emails</h4>
+                    <p class="text-muted">There are no pending emails scheduled at this time.</p>
+                    <div class="mt-3">
+                        <a href="{{ url_for('new_campaign') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i> Create New Campaign
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the scheduled email to <strong id="recipientEmail"></strong>?</p>
+                <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i> This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteEmailForm" method="post">
+                    <button type="submit" class="btn btn-danger">Delete Email</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize and start the countdowns
+        updateCountdowns();
+        setInterval(updateCountdowns, 1000);
+        
+        // Initialize the global countdown
+        updateGlobalCountdown();
+    });
+
+    function updateCountdowns() {
+        const now = new Date();
+        const countdownElements = document.querySelectorAll('.countdown-timer');
+        let minTimeRemaining = Number.MAX_SAFE_INTEGER;
+        let nextEmailElement = null;
+        
+        countdownElements.forEach(function(element) {
+            const sendTime = new Date(element.getAttribute('data-send-time'));
+            const emailId = element.getAttribute('data-email-id');
+            const timeRemaining = Math.max(0, Math.floor((sendTime - now) / 1000));
+            
+            if (timeRemaining > 0 && timeRemaining < minTimeRemaining) {
+                minTimeRemaining = timeRemaining;
+                nextEmailElement = element;
+            }
+            
+            if (timeRemaining <= 0) {
+                element.innerHTML = 'Sending...';
+                element.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+                element.classList.add('bg-secondary');
+            } else {
+                const hours = Math.floor(timeRemaining / 3600);
+                const minutes = Math.floor((timeRemaining % 3600) / 60);
+                const seconds = timeRemaining % 60;
+                
+                element.innerHTML = 
+                    String(hours).padStart(2, '0') + ':' + 
+                    String(minutes).padStart(2, '0') + ':' + 
+                    String(seconds).padStart(2, '0');
+                
+                // Update colors based on urgency
+                element.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+                if (timeRemaining < 60) { // Less than 1 minute
+                    element.classList.add('bg-danger');
+                } else if (timeRemaining < 300) { // Less than 5 minutes
+                    element.classList.add('bg-warning');
+                } else {
+                    element.classList.add('bg-success');
+                }
+            }
+        });
+        
+        // Update global countdown based on the next email to be sent
+        if (nextEmailElement) {
+            updateGlobalCountdown(nextEmailElement);
+        }
+        
+        // Check if we need to refresh the page
+        checkForRefresh(minTimeRemaining);
+    }
+    
+    function updateGlobalCountdown(nextEmailElement) {
+        const globalCountdown = document.getElementById('global-countdown');
+        const globalCountdownMessage = document.getElementById('global-countdown-message');
+        const hoursElement = document.getElementById('global-countdown-hours');
+        const minutesElement = document.getElementById('global-countdown-minutes');
+        const secondsElement = document.getElementById('global-countdown-seconds');
+        
+        if (!nextEmailElement) {
+            // Find the next email to be sent
+            const now = new Date();
+            const countdownElements = document.querySelectorAll('.countdown-timer');
+            let minTimeRemaining = Number.MAX_SAFE_INTEGER;
+            
+            countdownElements.forEach(function(element) {
+                const sendTime = new Date(element.getAttribute('data-send-time'));
+                const timeRemaining = Math.max(0, Math.floor((sendTime - now) / 1000));
+                
+                if (timeRemaining > 0 && timeRemaining < minTimeRemaining) {
+                    minTimeRemaining = timeRemaining;
+                    nextEmailElement = element;
+                }
+            });
+        }
+        
+        if (nextEmailElement) {
+            const now = new Date();
+            const sendTime = new Date(nextEmailElement.getAttribute('data-send-time'));
+            const timeRemaining = Math.max(0, Math.floor((sendTime - now) / 1000));
+            const emailId = nextEmailElement.getAttribute('data-email-id');
+            
+            // Find the email subject from the email element
+            let emailSubject = "the next email";
+            const emailRow = document.querySelector(`tr[data-email-id="${emailId}"]`);
+            if (emailRow) {
+                const subjectCell = emailRow.querySelector('td:nth-child(2)');
+                if (subjectCell) {
+                    emailSubject = subjectCell.textContent.trim();
+                }
+            }
+            
+            // Update message
+            globalCountdownMessage.innerHTML = `Next email <strong>"${emailSubject}"</strong> will be sent in:`;
+            
+            if (timeRemaining <= 0) {
+                hoursElement.textContent = '00';
+                minutesElement.textContent = '00';
+                secondsElement.textContent = '00';
+                globalCountdown.style.backgroundColor = '#6c757d'; // bg-secondary
+            } else {
+                const hours = Math.floor(timeRemaining / 3600);
+                const minutes = Math.floor((timeRemaining % 3600) / 60);
+                const seconds = timeRemaining % 60;
+                
+                hoursElement.textContent = String(hours).padStart(2, '0');
+                minutesElement.textContent = String(minutes).padStart(2, '0');
+                secondsElement.textContent = String(seconds).padStart(2, '0');
+                
+                // Update colors based on urgency
+                if (timeRemaining < 60) { // Less than 1 minute
+                    globalCountdown.style.backgroundColor = '#dc3545'; // bg-danger
+                } else if (timeRemaining < 300) { // Less than 5 minutes
+                    globalCountdown.style.backgroundColor = '#ffc107'; // bg-warning
+                    globalCountdown.style.color = '#000';
+                } else {
+                    globalCountdown.style.backgroundColor = '#198754'; // bg-success
+                    globalCountdown.style.color = '#fff';
+                }
+            }
+        } else {
+            globalCountdownMessage.innerHTML = 'No pending emails to send';
+            hoursElement.textContent = '--';
+            minutesElement.textContent = '--';
+            secondsElement.textContent = '--';
+            globalCountdown.style.backgroundColor = '#6c757d'; // bg-secondary
+        }
+    }
+    
+    function checkForRefresh(minTimeRemaining) {
+        // Check if any email is in "Sending..." state
+        const sendingElements = document.querySelectorAll('.countdown-timer:contains("Sending...")');
+        
+        if (sendingElements.length > 0) {
+            // If any email is being sent, refresh after 20 seconds to see updated status
+            setTimeout(function() {
+                location.reload();
+            }, 20000);
+        } else if (minTimeRemaining < 30) {
+            // If an email will be sent very soon, check again shortly
+            setTimeout(function() {
+                checkForRefresh(Math.max(0, minTimeRemaining - 5));
+            }, 5000);
+        } else {
+            // Otherwise, check again in a minute
+            setTimeout(function() {
+                checkForRefresh(Math.max(0, minTimeRemaining - 60));
+            }, 60000);
+        }
+    }
+    
+    // Initialize the refresh check
+    checkForRefresh(Number.MAX_SAFE_INTEGER);
+    
+    // Polyfill for :contains selector
+    jQuery.expr[':'].contains = function(a, i, m) {
+        return jQuery(a).text().toUpperCase().indexOf(m[3].toUpperCase()) >= 0;
+    };
+</script>
+{% endblock %} 

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Beakon Solutions - Add Recipient{% endblock %}
+
+{% block page_title %}Add Recipient{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('recipients') }}" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Back to Recipients
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Add New Recipient</h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('add_recipient') }}" method="post">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="form-text">Enter a valid email address that isn't already in the system.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">First Name (Optional)</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name">
+                        <div class="form-text">If left blank, a name will be extracted from the email address.</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Add Recipient
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

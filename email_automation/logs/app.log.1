@@ -1,0 +1,94 @@
+2025-03-11 22:00:52,635 INFO: Beakon Solutions system startup [in D:\W\email_automation\app.py:32]
+2025-03-11 22:00:52,637 INFO: Starting Beakon Solutions Server... [in D:\W\email_automation\app.py:38]
+2025-03-11 22:00:52,637 INFO: Initializing email processing scheduler... [in D:\W\email_automation\app.py:41]
+2025-03-11 22:01:27,225 INFO: Processing 2 pending emails [in D:\W\email_automation\app\utils\scheduler_utils.py:141]
+2025-03-11 22:01:27,228 INFO: Applied body personalization ({firstName}) to email 27 for varshith0805@gmail.com [in D:\W\email_automation\app\utils\scheduler_utils.py:209]
+2025-03-11 22:01:27,239 INFO: Attempting to send email 27 to varshith0805@gmail.com from ethan@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:140]
+2025-03-11 22:01:27,239 INFO: SMTP Settings: smtp.hostinger.com:465, Username: ethan@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:141]
+2025-03-11 22:01:27,240 INFO: ==== REAL SENDING MODE ACTIVE ==== Email will be sent for real to varshith0805@gmail.com [in D:\W\email_automation\app\utils\email_utils.py:156]
+2025-03-11 22:01:27,248 INFO: REAL SEND: Connecting to SMTP server: smtp.hostinger.com:465 [in D:\W\email_automation\app\utils\email_utils.py:190]
+2025-03-11 22:01:27,932 INFO: Logging in with username: ethan@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:193]
+2025-03-11 22:01:28,224 INFO: Sending email from ethan@beakonagency.com to varshith0805@gmail.com [in D:\W\email_automation\app\utils\email_utils.py:196]
+2025-03-11 22:01:29,031 INFO: Email sent successfully [in D:\W\email_automation\app\utils\email_utils.py:198]
+2025-03-11 22:01:29,176 INFO: Email 27 sent successfully to varshith0805@gmail.com [in D:\W\email_automation\app\utils\email_utils.py:205]
+2025-03-11 22:01:29,185 INFO: Email 27 sent successfully [in D:\W\email_automation\app\utils\scheduler_utils.py:107]
+2025-03-11 22:01:31,200 INFO: Applied body personalization ({firstName}) to email 29 for ridhitkothari27@gmail.com [in D:\W\email_automation\app\utils\scheduler_utils.py:209]
+2025-03-11 22:01:31,215 INFO: Attempting to send email 29 to ridhitkothari27@gmail.com from nova@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:140]
+2025-03-11 22:01:31,217 INFO: SMTP Settings: smtp.hostinger.com:464, Username: nova@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:141]
+2025-03-11 22:01:31,217 INFO: ==== REAL SENDING MODE ACTIVE ==== Email will be sent for real to ridhitkothari27@gmail.com [in D:\W\email_automation\app\utils\email_utils.py:156]
+2025-03-11 22:01:31,223 INFO: REAL SEND: Connecting to SMTP server: smtp.hostinger.com:464 [in D:\W\email_automation\app\utils\email_utils.py:190]
+2025-03-11 22:01:31,265 ERROR: SMTP Error: [WinError 10054] An existing connection was forcibly closed by the remote host [in D:\W\email_automation\app\utils\email_utils.py:225]
+2025-03-11 22:01:31,271 ERROR: Stack trace: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 192, in send_email
+    with smtplib.SMTP_SSL(account.smtp_server, account.smtp_port, context=context) as server:
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\smtplib.py", line 1050, in __init__
+    SMTP.__init__(self, host, port, local_hostname, timeout,
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\smtplib.py", line 255, in __init__
+    (code, msg) = self.connect(host, port)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\smtplib.py", line 341, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\smtplib.py", line 1057, in _get_socket
+    new_socket = self.context.wrap_socket(new_socket,
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\ssl.py", line 500, in wrap_socket
+    return self.sslsocket_class._create(
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\ssl.py", line 1040, in _create
+    self.do_handshake()
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\ssl.py", line 1309, in do_handshake
+    self._sslobj.do_handshake()
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+ [in D:\W\email_automation\app\utils\email_utils.py:226]
+2025-03-11 22:01:31,292 INFO: Email 29 sent successfully [in D:\W\email_automation\app\utils\scheduler_utils.py:107]
+2025-03-11 22:01:33,305 INFO: Processed 2 emails [in D:\W\email_automation\app\utils\scheduler_utils.py:180]
+2025-03-11 22:07:43,623 INFO: Beakon Solutions system startup [in D:\W\email_automation\app.py:32]
+2025-03-11 22:07:43,624 INFO: Starting Beakon Solutions Server... [in D:\W\email_automation\app.py:38]
+2025-03-11 22:07:43,624 INFO: Initializing email processing scheduler... [in D:\W\email_automation\app.py:41]
+2025-03-11 22:07:43,631 INFO: Processing 2 pending emails [in D:\W\email_automation\app\utils\scheduler_utils.py:142]
+2025-03-11 22:07:43,636 INFO: Applied body personalization ({firstName}) to email 28 for beakonagency@gmail.com [in D:\W\email_automation\app\utils\scheduler_utils.py:210]
+2025-03-11 22:07:43,648 INFO: Attempting to send email 28 to beakonagency@gmail.com from ethan@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:140]
+2025-03-11 22:07:43,648 INFO: SMTP Settings: smtp.hostinger.com:465, Username: ethan@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:141]
+2025-03-11 22:07:43,648 INFO: ==== REAL SENDING MODE ACTIVE ==== Email will be sent for real to beakonagency@gmail.com [in D:\W\email_automation\app\utils\email_utils.py:156]
+2025-03-11 22:07:43,654 INFO: REAL SEND: Connecting to SMTP server: smtp.hostinger.com:465 [in D:\W\email_automation\app\utils\email_utils.py:190]
+2025-03-11 22:07:44,210 INFO: Logging in with username: ethan@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:193]
+2025-03-11 22:07:44,529 INFO: Sending email from ethan@beakonagency.com to beakonagency@gmail.com [in D:\W\email_automation\app\utils\email_utils.py:196]
+2025-03-11 22:07:45,321 INFO: Email sent successfully [in D:\W\email_automation\app\utils\email_utils.py:198]
+2025-03-11 22:07:45,474 INFO: Email 28 sent successfully to beakonagency@gmail.com [in D:\W\email_automation\app\utils\email_utils.py:205]
+2025-03-11 22:07:45,482 INFO: Email 28 sent successfully [in D:\W\email_automation\app\utils\scheduler_utils.py:108]
+2025-03-11 22:07:47,490 INFO: Applied body personalization ({firstName}) to email 30 for deufnda@gmail.com [in D:\W\email_automation\app\utils\scheduler_utils.py:210]
+2025-03-11 22:07:47,501 INFO: Attempting to send email 30 to deufnda@gmail.com from nova@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:140]
+2025-03-11 22:07:47,501 INFO: SMTP Settings: smtp.hostinger.com:464, Username: nova@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:141]
+2025-03-11 22:07:47,501 INFO: ==== REAL SENDING MODE ACTIVE ==== Email will be sent for real to deufnda@gmail.com [in D:\W\email_automation\app\utils\email_utils.py:156]
+2025-03-11 22:07:47,506 INFO: REAL SEND: Connecting to SMTP server: smtp.hostinger.com:464 [in D:\W\email_automation\app\utils\email_utils.py:190]
+2025-03-11 22:07:47,542 ERROR: SMTP Error: [WinError 10054] An existing connection was forcibly closed by the remote host [in D:\W\email_automation\app\utils\email_utils.py:225]
+2025-03-11 22:07:47,544 ERROR: Stack trace: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 192, in send_email
+    with smtplib.SMTP_SSL(account.smtp_server, account.smtp_port, context=context) as server:
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\smtplib.py", line 1050, in __init__
+    SMTP.__init__(self, host, port, local_hostname, timeout,
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\smtplib.py", line 255, in __init__
+    (code, msg) = self.connect(host, port)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\smtplib.py", line 341, in connect
+    self.sock = self._get_socket(host, port, self.timeout)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\smtplib.py", line 1057, in _get_socket
+    new_socket = self.context.wrap_socket(new_socket,
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\ssl.py", line 500, in wrap_socket
+    return self.sslsocket_class._create(
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\ssl.py", line 1040, in _create
+    self.do_handshake()
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\ssl.py", line 1309, in do_handshake
+    self._sslobj.do_handshake()
+ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
+ [in D:\W\email_automation\app\utils\email_utils.py:226]
+2025-03-11 22:07:47,562 INFO: Email 30 sent successfully [in D:\W\email_automation\app\utils\scheduler_utils.py:108]
+2025-03-11 22:07:49,567 INFO: Processed 2 emails [in D:\W\email_automation\app\utils\scheduler_utils.py:181]
+2025-03-11 22:07:53,301 ERROR: Error loading campaigns: (sqlite3.OperationalError) no such column: e.campaign_id
+[SQL: SELECT e.* FROM email e WHERE e.campaign_id = ?]
+[parameters: (3,)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8) [in D:\W\email_automation\app\controllers\routes.py:604]
+2025-03-11 22:07:55,573 ERROR: Error loading campaigns: (sqlite3.OperationalError) no such column: e.campaign_id
+[SQL: SELECT e.* FROM email e WHERE e.campaign_id = ?]
+[parameters: (3,)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8) [in D:\W\email_automation\app\controllers\routes.py:604]
+2025-03-11 22:08:00,218 ERROR: Error loading campaigns: (sqlite3.OperationalError) no such column: e.campaign_id
+[SQL: SELECT e.* FROM email e WHERE e.campaign_id = ?]
+[parameters: (3,)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8) [in D:\W\email_automation\app\controllers\routes.py:604]

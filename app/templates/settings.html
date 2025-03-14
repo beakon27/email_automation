@@ -1,0 +1,240 @@
+{% extends 'base.html' %}
+
+{% block title %}Settings - Beakon Solutions{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Settings</h1>
+    </div>
+
+    <div class="row">
+        <!-- Scheduling Settings Card -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Email Scheduling</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">
+                        Configure how emails are scheduled to mimic human sending patterns. This helps improve
+                        deliverability and avoid spam filters by making your automated emails appear more natural.
+                    </p>
+                    
+                    <form method="POST" action="{{ url_for('settings') }}">
+                        <input type="hidden" name="settings_type" value="scheduling">
+                        
+                        <div class="form-group">
+                            <label for="default_pattern"><strong>Default Scheduling Pattern</strong></label>
+                            <select class="form-control" id="default_pattern" name="default_pattern">
+                                {% for pattern_name, pattern in patterns.items() %}
+                                <option value="{{ pattern_name }}" {% if scheduling_settings.default_pattern == pattern_name %}selected{% endif %}>
+                                    {{ pattern_name.capitalize() }} - {{ pattern.description }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-text text-muted">
+                                This pattern will be used by default when creating new campaigns
+                            </small>
+                        </div>
+                        
+                        <div class="form-group row">
+                            <div class="col-sm-6 mb-3 mb-sm-0">
+                                <label for="business_hours_start"><strong>Business Hours Start</strong></label>
+                                <select class="form-control" id="business_hours_start" name="business_hours_start">
+                                    {% for hour in range(0, 24) %}
+                                    <option value="{{ hour }}" {% if scheduling_settings.business_hours_start == hour %}selected{% endif %}>
+                                        {{ "%02d" % hour }}:00
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-sm-6">
+                                <label for="business_hours_end"><strong>Business Hours End</strong></label>
+                                <select class="form-control" id="business_hours_end" name="business_hours_end">
+                                    {% for hour in range(0, 24) %}
+                                    <option value="{{ hour }}" {% if scheduling_settings.business_hours_end == hour %}selected{% endif %}>
+                                        {{ "%02d" % hour }}:00
+                                    </option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="respect_business_hours" name="respect_business_hours" 
+                                       {% if scheduling_settings.respect_business_hours %}checked{% endif %}>
+                                <label class="custom-control-label" for="respect_business_hours">
+                                    Respect Business Hours
+                                </label>
+                            </div>
+                            <small class="form-text text-muted">
+                                When enabled, most emails will be scheduled within business hours
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                Save Scheduling Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        Pattern Descriptions
+                    </div>
+                    <ul class="mt-2 pl-4">
+                        <li><strong>Balanced:</strong> Moderate clustering of emails with natural breaks</li>
+                        <li><strong>Aggressive:</strong> More emails in shorter timeframes</li>
+                        <li><strong>Conservative:</strong> Smaller clusters with longer breaks between sends</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Apply Human Scheduling Card -->
+        <div class="col-xl-6 col-lg-6">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Apply Human-like Scheduling</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-4">
+                        Reschedule an existing campaign to use human-like sending patterns. This will update
+                        all pending emails in the campaign to follow natural sending clusters.
+                    </p>
+                    
+                    {% if campaigns %}
+                    <form method="POST" action="{{ url_for('settings') }}">
+                        <input type="hidden" name="settings_type" value="reschedule_campaign">
+                        
+                        <div class="form-group">
+                            <label for="campaign_id"><strong>Select Campaign to Reschedule</strong></label>
+                            <select class="form-control" id="campaign_id" name="campaign_id" required>
+                                <option value="">Select a campaign...</option>
+                                {% for campaign in campaigns %}
+                                <option value="{{ campaign.id }}">
+                                    {{ campaign.name }} ({{ campaign.pending_count }} pending emails)
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="pattern"><strong>Scheduling Pattern</strong></label>
+                            <select class="form-control" id="pattern" name="pattern">
+                                {% for pattern_name, pattern in patterns.items() %}
+                                <option value="{{ pattern_name }}">
+                                    {{ pattern_name.capitalize() }} - {{ pattern.description }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="respect_hours" name="respect_hours" checked>
+                                <label class="custom-control-label" for="respect_hours">
+                                    Respect Business Hours
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-success">
+                                Apply Human-like Scheduling
+                            </button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <div class="alert alert-info">
+                        No active campaigns with pending emails found. Create a campaign or add recipients to apply human-like scheduling.
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="card-footer">
+                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                        How It Works
+                    </div>
+                    <p class="mt-2 mb-0 small">
+                        Human-like scheduling creates natural clusters of emails with varying gaps between sends.
+                        For example, 3 emails sent in quick succession, followed by a 1-2 hour break, then another cluster.
+                        This mimics how a real person would send emails throughout the day.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Pattern Visualization -->
+        <div class="col-12">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Pattern Samples</h6>
+                </div>
+                <div class="card-body">
+                    <p>Each pattern distributes emails differently throughout the day:</p>
+                    
+                    <div class="row">
+                        <!-- Balanced Pattern -->
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-header bg-primary text-white">
+                                    Balanced Pattern
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-2 font-weight-bold">Example distribution for 50 emails:</p>
+                                    <ul>
+                                        <li>Morning (8am-12pm): ~18 emails in 3-4 clusters</li>
+                                        <li>Afternoon (12pm-5pm): ~22 emails in 3-4 clusters</li>
+                                        <li>Evening (5pm-8pm): ~10 emails in 1-2 clusters</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Aggressive Pattern -->
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-header bg-danger text-white">
+                                    Aggressive Pattern
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-2 font-weight-bold">Example distribution for 50 emails:</p>
+                                    <ul>
+                                        <li>Morning (8am-12pm): ~24 emails in 2-3 larger clusters</li>
+                                        <li>Afternoon (12pm-5pm): ~18 emails in 2 clusters</li>
+                                        <li>Evening (5pm-8pm): ~8 emails in 1 cluster</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Conservative Pattern -->
+                        <div class="col-md-4">
+                            <div class="card mb-3">
+                                <div class="card-header bg-success text-white">
+                                    Conservative Pattern
+                                </div>
+                                <div class="card-body">
+                                    <p class="mb-2 font-weight-bold">Example distribution for 50 emails:</p>
+                                    <ul>
+                                        <li>Morning (8am-12pm): ~15 emails in 5-6 small clusters</li>
+                                        <li>Afternoon (12pm-5pm): ~25 emails in 6-8 small clusters</li>
+                                        <li>Evening (5pm-8pm): ~10 emails in 4-5 small clusters</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

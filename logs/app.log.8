@@ -1,0 +1,77 @@
+2025-03-11 20:49:37,561 INFO: Email Automation System startup [in D:\W\email_automation\app.py:25]
+2025-03-11 20:49:37,563 INFO: Database tables created/verified [in D:\W\email_automation\app.py:30]
+2025-03-11 20:49:38,153 INFO: Email Automation System startup [in D:\W\email_automation\app.py:25]
+2025-03-11 20:49:38,154 INFO: Database tables created/verified [in D:\W\email_automation\app.py:30]
+2025-03-11 20:50:44,482 INFO: Email Automation System startup [in D:\W\email_automation\app.py:25]
+2025-03-11 20:50:44,484 INFO: Database tables created/verified [in D:\W\email_automation\app.py:30]
+2025-03-11 20:52:05,263 INFO: Email Automation System startup [in D:\W\email_automation\app.py:25]
+2025-03-11 20:52:05,265 INFO: Database tables created/verified [in D:\W\email_automation\app.py:30]
+2025-03-11 20:52:24,705 INFO: Email Automation System startup [in D:\W\email_automation\app.py:28]
+2025-03-11 20:52:24,707 INFO: Database tables created/verified [in D:\W\email_automation\app.py:33]
+2025-03-11 20:52:47,433 ERROR: Error loading dashboard: (sqlite3.OperationalError) no such column: email.campaign_id
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT email.id AS email_id, email.account_id AS email_account_id, email.recipient_id AS email_recipient_id, email.template_id AS email_template_id, email.subject AS email_subject, email.body AS email_body, email.status AS email_status, email.scheduled_at AS email_scheduled_at, email.sent_at AS email_sent_at, email.response_received_at AS email_response_received_at, email.is_follow_up AS email_is_follow_up, email.parent_email_id AS email_parent_email_id, email.created_at AS email_created_at, email.updated_at AS email_updated_at, email.response_subject AS email_response_subject, email.response_content AS email_response_content, email.campaign_id AS email_campaign_id 
+FROM email 
+WHERE email.status = ?) AS anon_1]
+[parameters: ('PENDING',)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8) [in D:\W\email_automation\app\controllers\routes.py:65]
+2025-03-11 20:52:55,893 ERROR: Error loading dashboard: (sqlite3.OperationalError) no such column: email.campaign_id
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT email.id AS email_id, email.account_id AS email_account_id, email.recipient_id AS email_recipient_id, email.template_id AS email_template_id, email.subject AS email_subject, email.body AS email_body, email.status AS email_status, email.scheduled_at AS email_scheduled_at, email.sent_at AS email_sent_at, email.response_received_at AS email_response_received_at, email.is_follow_up AS email_is_follow_up, email.parent_email_id AS email_parent_email_id, email.created_at AS email_created_at, email.updated_at AS email_updated_at, email.response_subject AS email_response_subject, email.response_content AS email_response_content, email.campaign_id AS email_campaign_id 
+FROM email 
+WHERE email.status = ?) AS anon_1]
+[parameters: ('PENDING',)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8) [in D:\W\email_automation\app\controllers\routes.py:65]
+2025-03-11 20:52:56,507 ERROR: Error loading dashboard: (sqlite3.OperationalError) no such column: email.campaign_id
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT email.id AS email_id, email.account_id AS email_account_id, email.recipient_id AS email_recipient_id, email.template_id AS email_template_id, email.subject AS email_subject, email.body AS email_body, email.status AS email_status, email.scheduled_at AS email_scheduled_at, email.sent_at AS email_sent_at, email.response_received_at AS email_response_received_at, email.is_follow_up AS email_is_follow_up, email.parent_email_id AS email_parent_email_id, email.created_at AS email_created_at, email.updated_at AS email_updated_at, email.response_subject AS email_response_subject, email.response_content AS email_response_content, email.campaign_id AS email_campaign_id 
+FROM email 
+WHERE email.status = ?) AS anon_1]
+[parameters: ('PENDING',)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8) [in D:\W\email_automation\app\controllers\routes.py:65]
+2025-03-11 20:53:24,805 ERROR: Error loading dashboard: (sqlite3.OperationalError) no such column: email.campaign_id
+[SQL: SELECT count(*) AS count_1 
+FROM (SELECT email.id AS email_id, email.account_id AS email_account_id, email.recipient_id AS email_recipient_id, email.template_id AS email_template_id, email.subject AS email_subject, email.body AS email_body, email.status AS email_status, email.scheduled_at AS email_scheduled_at, email.sent_at AS email_sent_at, email.response_received_at AS email_response_received_at, email.is_follow_up AS email_is_follow_up, email.parent_email_id AS email_parent_email_id, email.created_at AS email_created_at, email.updated_at AS email_updated_at, email.response_subject AS email_response_subject, email.response_content AS email_response_content, email.campaign_id AS email_campaign_id 
+FROM email 
+WHERE email.status = ?) AS anon_1]
+[parameters: ('PENDING',)]
+(Background on this error at: https://sqlalche.me/e/14/e3q8) [in D:\W\email_automation\app\controllers\routes.py:65]
+2025-03-11 20:56:06,265 INFO: Email Automation System startup [in D:\W\email_automation\app.py:27]
+2025-03-11 20:56:06,268 INFO: Database tables created/verified [in D:\W\email_automation\app.py:32]
+2025-03-11 20:56:06,268 INFO: Starting Email Automation Server... [in D:\W\email_automation\app.py:36]
+2025-03-11 20:56:06,269 INFO: Initializing email processing scheduler... [in D:\W\email_automation\app.py:39]
+2025-03-11 20:56:06,277 ERROR: Error processing email queue: (sqlite3.OperationalError) no such column: email.campaign_id
+[SQL: SELECT email.id AS email_id, email.account_id AS email_account_id, email.recipient_id AS email_recipient_id, email.template_id AS email_template_id, email.campaign_id AS email_campaign_id, email.subject AS email_subject, email.body AS email_body, email.status AS email_status, email.scheduled_at AS email_scheduled_at, email.sent_at AS email_sent_at, email.response_received_at AS email_response_received_at, email.response_subject AS email_response_subject, email.response_content AS email_response_content, email.is_follow_up AS email_is_follow_up, email.parent_email_id AS email_parent_email_id, email.created_at AS email_created_at, email.updated_at AS email_updated_at 
+FROM email 
+WHERE email.status = ? AND email.scheduled_at <= ? ORDER BY email.scheduled_at]
+[parameters: ('PENDING', '2025-03-11 20:56:06.269977')]
+(Background on this error at: https://sqlalche.me/e/14/e3q8) [in D:\W\email_automation\app\utils\scheduler_utils.py:141]
+2025-03-11 20:56:06,277 INFO: Starting check for email replies across all accounts [in D:\W\email_automation\app\utils\scheduler_utils.py:52]
+2025-03-11 20:56:06,280 INFO: Checking 19 accounts for email replies [in D:\W\email_automation\app\utils\scheduler_utils.py:59]
+2025-03-11 20:56:06,280 INFO: Checking replies for account: business@beakonagency.com [in D:\W\email_automation\app\utils\scheduler_utils.py:64]
+2025-03-11 20:56:06,280 INFO: Connecting to IMAP server imap.hostinger.com:993 for account business@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:414]
+2025-03-11 20:56:06,934 INFO: Attempting login with username: business@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:424]
+2025-03-11 20:56:07,220 INFO: Successfully logged into IMAP server for business@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:433]
+2025-03-11 20:56:07,380 INFO: Selected INBOX with 24 messages [in D:\W\email_automation\app\utils\email_utils.py:446]
+2025-03-11 20:56:07,692 ERROR: Error checking for replies: type object 'datetime.datetime' has no attribute 'datetime' [in D:\W\email_automation\app\utils\email_utils.py:621]
+2025-03-11 20:56:07,693 ERROR: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 449, in check_for_replies
+    date = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%d-%b-%Y")
+AttributeError: type object 'datetime.datetime' has no attribute 'datetime'
+ [in D:\W\email_automation\app\utils\email_utils.py:622]
+2025-03-11 20:56:07,694 INFO: Checking replies for account: varshith@beakonagency.com [in D:\W\email_automation\app\utils\scheduler_utils.py:64]
+2025-03-11 20:56:07,695 INFO: Connecting to IMAP server imap.hostinger.com:993 for account varshith@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:414]
+2025-03-11 20:56:08,306 INFO: Attempting login with username: varshith@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:424]
+2025-03-11 20:56:08,521 INFO: Successfully logged into IMAP server for varshith@beakonagency.com [in D:\W\email_automation\app\utils\email_utils.py:433]
+2025-03-11 20:56:08,663 INFO: Selected INBOX with 1 messages [in D:\W\email_automation\app\utils\email_utils.py:446]
+2025-03-11 20:56:08,943 ERROR: Error checking for replies: type object 'datetime.datetime' has no attribute 'datetime' [in D:\W\email_automation\app\utils\email_utils.py:621]
+2025-03-11 20:56:08,944 ERROR: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 449, in check_for_replies
+    date = (datetime.datetime.now() - datetime.timedelta(days=30)).strftime("%d-%b-%Y")
+AttributeError: type object 'datetime.datetime' has no attribute 'datetime'
+ [in D:\W\email_automation\app\utils\email_utils.py:622]
+2025-03-11 20:56:08,945 INFO: Checking replies for account: ridhit@beakonagency.com [in D:\W\email_automation\app\utils\scheduler_utils.py:64]
+2025-03-11 20:56:08,946 ERROR: Error checking replies for account 3: unsupported operand type(s) for +=: 'int' and 'list' [in D:\W\email_automation\app\utils\scheduler_utils.py:70]
+2025-03-11 20:56:08,946 INFO: Checking replies for account: alex@beakonagency.com [in D:\W\email_automation\app\utils\scheduler_utils.py:64]
+2025-03-11 20:56:08,946 ERROR: Error checking replies for account 4: unsupported operand type(s) for +=: 'int' and 'list' [in D:\W\email_automation\app\utils\scheduler_utils.py:70]
+2025-03-11 21:00:43,445 INFO: Email Automation System startup [in D:\W\email_automation\app.py:27]

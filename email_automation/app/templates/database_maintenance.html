@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Database Maintenance{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-warning text-dark">
+                    <h4><i class="fas fa-database mr-2"></i> Database Maintenance</h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5>Error Details:</h5>
+                        <p>{{ error_message }}</p>
+                    </div>
+                    
+                    <div class="alert alert-secondary">
+                        <h5>System Information</h5>
+                        <p>The application is experiencing a database schema issue. This typically happens when:</p>
+                        <ul>
+                            <li>The database was created with an older version of the application</li>
+                            <li>A required migration hasn't been applied</li>
+                            <li>Database files have been manually modified</li>
+                        </ul>
+                        <p>The system will attempt to repair the schema automatically.</p>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <a href="{{ url_for('fix_db') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-tools mr-2"></i> Repair Database
+                        </a>
+                        <p class="text-muted mt-2">This will attempt to fix the database schema and reload the application.</p>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <p class="text-center">
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-sync mr-2"></i> Refresh Page
+                            </a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

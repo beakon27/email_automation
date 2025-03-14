@@ -1,0 +1,563 @@
+{% extends "base.html" %}
+
+{% block title %}Beakon Solutions - New Campaign{% endblock %}
+
+{% block page_title %}Create New Campaign{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+</a>
+{% endblock %}
+
+{% block extra_css %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #ced4da;
+        min-height: 38px;
+    }
+    .campaign-steps .step {
+        padding: 20px;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+    .campaign-steps .step-number {
+        display: inline-block;
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        background-color: #0d6efd;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        margin-right: 10px;
+    }
+    .selection-method {
+        display: none;
+    }
+    .selection-method.active {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto">
+        <div class="card">
+            <div class="card-body">
+                {% if not accounts or not templates or not recipients %}
+                <div class="alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i> 
+                    <strong>Required data missing!</strong> 
+                    {% if not accounts %}
+                    <p>You need to add at least one email account before creating a campaign. <a href="{{ url_for('add_account') }}">Add an account now</a></p>
+                    {% endif %}
+                    {% if not templates %}
+                    <p>You need to add at least one email template before creating a campaign. <a href="{{ url_for('add_template') }}">Add a template now</a></p>
+                    {% endif %}
+                    {% if not recipients %}
+                    <p>You need to add at least one recipient before creating a campaign. <a href="{{ url_for('add_recipient') }}">Add a recipient</a> or <a href="{{ url_for('import_recipients') }}">import from CSV</a></p>
+                    {% endif %}
+                </div>
+                {% else %}
+                <form action="{{ url_for('new_campaign') }}" method="post" id="campaign-form">
+                    <div class="campaign-steps">
+                        <div class="step">
+                            <h5><span class="step-number">1</span> Campaign Details</h5>
+                            <p class="text-muted">Enter a name for your campaign.</p>
+                            
+                            <div class="mb-3">
+                                <label for="campaign_name" class="form-label">Campaign Name</label>
+                                <input type="text" class="form-control" id="campaign_name" name="campaign_name" placeholder="Enter campaign name" required>
+                                <div class="form-text">Give your campaign a descriptive name to easily identify it later.</div>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h5><span class="step-number">2</span> Select Email Accounts</h5>
+                            <p class="text-muted">Choose one or more email accounts to send from.</p>
+                            
+                            <div class="mb-3">
+                                <div class="card">
+                                    <div class="card-header bg-light">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0">Available Email Accounts</h6>
+                                            <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllAccounts">Select All</button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body account-selection-container" style="max-height: 250px; overflow-y: auto;">
+                                        {% for account in accounts %}
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input email-account-checkbox" type="checkbox" id="account-{{ account.id }}" name="account_ids" value="{{ account.id }}" data-daily-limit="{{ account.daily_limit }}" data-remaining-limit="{{ account.remaining_today }}">
+                                            <label class="form-check-label" for="account-{{ account.id }}">
+                                                <strong>{{ account.name }}</strong> ({{ account.email }})
+                                                <small class="text-muted d-block">Daily limit: {{ account.daily_limit }} | Sent today: {{ account.sent_today }} | Remaining: {{ account.remaining_today }}</small>
+                                            </label>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="account-summary" class="alert alert-info d-none">
+                                <div class="d-flex align-items-center">
+                                    <div class="me-3">
+                                        <i class="fas fa-envelope-open-text fa-2x"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-1">Selected Accounts: <span id="selected-account-count">0</span></h6>
+                                        <p class="mb-0">Total daily limit: <span id="total-daily-limit">0</span> emails</p>
+                                        <p class="mb-0">Total remaining: <span id="total-remaining">0</span> emails</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3 mt-4">
+                            <label class="form-label">Scheduling Method</label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="radio" name="scheduling_method" id="human_like" value="human_like" checked>
+                                <label class="form-check-label" for="human_like">
+                                    <strong>Human-like scheduling</strong> (recommended)
+                                </label>
+                                <div class="form-text ms-4">
+                                    Schedule emails in natural clusters with varying gaps between sends, mimicking human behavior.
+                                    This helps improve deliverability and avoid spam filters.
+                                </div>
+                            </div>
+                            
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="radio" name="scheduling_method" id="fixed_interval" value="fixed_interval">
+                                <label class="form-check-label" for="fixed_interval">
+                                    <strong>Fixed interval scheduling</strong>
+                                </label>
+                                <div class="form-text ms-4">
+                                    Send emails at exact regular intervals (not recommended for large campaigns).
+                                </div>
+                            </div>
+                            
+                            <div id="human_like_options" class="card p-3 bg-light">
+                                <div class="mb-3">
+                                    <label for="pattern" class="form-label">Scheduling Pattern</label>
+                                    <select class="form-select" id="pattern" name="pattern">
+                                        <option value="balanced" selected>Balanced - Moderate clustering with natural breaks</option>
+                                        <option value="aggressive">Aggressive - More emails in shorter timeframes</option>
+                                        <option value="conservative">Conservative - Smaller clusters with longer breaks</option>
+                                    </select>
+                                    <div class="form-text">
+                                        <i class="fas fa-info-circle me-1"></i> See the Settings page for detailed pattern descriptions.
+                                    </div>
+                                </div>
+                                
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="respect_business_hours" name="respect_business_hours" checked>
+                                    <label class="form-check-label" for="respect_business_hours">
+                                        Respect business hours
+                                    </label>
+                                    <div class="form-text ms-4">
+                                        Most emails will be scheduled during business hours (8am-6pm by default).
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div id="fixed_interval_options" class="card p-3 bg-light mt-3" style="display: none;">
+                                <label for="time_gap" class="form-label">Time Gap Between Emails</label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control" id="time_gap" name="time_gap" min="1" value="2">
+                                    <select class="form-select" id="time_unit" name="time_unit" style="max-width: 120px;">
+                                        <option value="minutes">Minutes</option>
+                                        <option value="hours">Hours</option>
+                                    </select>
+                                </div>
+                                <div class="form-text">
+                                    <i class="fas fa-info-circle me-1"></i> This sets the exact time between consecutive emails. For example, with a 2-minute gap, emails will be sent at 16:07, 16:09, 16:11, etc.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h5><span class="step-number">3</span> Select Email Template</h5>
+                            <p class="text-muted">Choose the template for your campaign.</p>
+                            
+                            <div class="mb-3">
+                                <label for="template_id" class="form-label">Email Template</label>
+                                <select class="form-select" id="template_id" name="template_id" required>
+                                    <option value="">Select a template</option>
+                                    {% for template in templates %}
+                                    <option value="{{ template.id }}">{{ template.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h5><span class="step-number">4</span> Select Recipients</h5>
+                            <p class="text-muted">Choose who should receive this campaign.</p>
+                            
+                            <div class="mb-3">
+                                <label class="form-label">Selection Method</label>
+                                <div class="btn-group w-100 mb-3" role="group">
+                                    <input type="radio" class="btn-check" name="selection_method" id="selection_individual" value="individual" checked>
+                                    <label class="btn btn-outline-primary" for="selection_individual">Individual Recipients</label>
+                                    
+                                    <input type="radio" class="btn-check" name="selection_method" id="selection_import" value="import">
+                                    <label class="btn btn-outline-primary" for="selection_import">From CSV Import</label>
+                                    
+                                    <input type="radio" class="btn-check" name="selection_method" id="selection_all" value="all">
+                                    <label class="btn btn-outline-primary" for="selection_all">All Recipients</label>
+                                </div>
+                                
+                                <!-- Individual Selection -->
+                                <div id="individual-selection" class="selection-method active">
+                                    <label for="recipient_ids" class="form-label">Select Individual Recipients</label>
+                                    <select class="form-select" id="recipient_ids" name="recipient_ids" multiple>
+                                        {% for recipient in recipients %}
+                                        <option value="{{ recipient.id }}">{{ recipient.email }} {% if recipient.first_name %}({{ recipient.first_name }}){% endif %}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="form-text">Selected: <span id="selected-count">0</span> recipients</div>
+                                </div>
+                                
+                                <!-- Import Selection -->
+                                <div id="import-selection" class="selection-method">
+                                    <label for="import_id" class="form-label">Select CSV Import</label>
+                                    <select class="form-select" id="import_id" name="import_id">
+                                        <option value="">Select an import</option>
+                                        {% for import in imports %}
+                                        <option value="{{ import.id }}" {% if request.args.get('import_id')|int == import.id %}selected{% endif %}>
+                                            {{ import.filename }} ({{ import.valid_records }} recipients) - {{ import.created_at.strftime('%Y-%m-%d') }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div class="form-text">This will select all recipients from the chosen import file.</div>
+                                    <div id="import-preview" class="mt-3 d-none">
+                                        <div class="alert alert-info">
+                                            <strong>Preview:</strong> <span id="import-count">0</span> recipients will be included in this campaign.
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- All Recipients Selection -->
+                                <div id="all-selection" class="selection-method">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i> This will send to all <strong>{{ recipients|length }}</strong> active recipients in your database.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="step">
+                            <h5><span class="step-number">5</span> Review & Schedule</h5>
+                            <p class="text-muted">Review your campaign before scheduling it.</p>
+                            
+                            <div class="alert alert-light">
+                                <h6>Campaign Summary</h6>
+                                <ul>
+                                    <li>Accounts: <span id="summary-accounts">Not selected</span></li>
+                                    <li>Template: <span id="summary-template">Not selected</span></li>
+                                    <li>Recipients: <span id="summary-recipients">None selected</span></li>
+                                </ul>
+                                
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i> <strong>Important:</strong> 
+                                    <p class="mb-0">Emails will be scheduled based on your configured time gap between messages. Depending on the number of recipients and your daily sending limits, this campaign may take multiple days to complete.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane me-2"></i> Schedule Campaign
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+$(document).ready(function() {
+        // Recipient selection methods
+        $('input[name="selection_method"]').on('change', function() {
+            const method = $(this).val();
+            $('.selection-method').removeClass('active');
+            $(`#${method}-selection`).addClass('active');
+            updateRecipientSummary();
+        });
+        
+        // Initialize select2 for recipient multi-select
+        $('#recipient_ids').select2({
+            placeholder: 'Select recipients',
+            allowClear: true,
+            width: '100%'
+        });
+        
+        // Handle select all accounts button
+        $('#selectAllAccounts').on('click', function() {
+            const checkboxes = $('.email-account-checkbox');
+            const allChecked = checkboxes.length === checkboxes.filter(':checked').length;
+            
+            checkboxes.prop('checked', !allChecked);
+            updateAccountSummary();
+            updateDistributionPreview();
+        });
+        
+        // Update account summary when selections change
+        $('.email-account-checkbox').on('change', function() {
+            updateAccountSummary();
+            updateDistributionPreview();
+        });
+        
+        // Update time gap impact on distribution
+        $('#time_gap, #time_unit').on('change', function() {
+            updateDistributionPreview();
+        });
+        
+        // Update template selection in summary
+        $('#template_id').on('change', function() {
+            const selectedTemplate = $(this).find('option:selected');
+            if (selectedTemplate.val()) {
+                $('#summary-template').text(selectedTemplate.text());
+            } else {
+                $('#summary-template').text('Not selected');
+            }
+        });
+        
+        // Track recipient selection changes
+        $('#recipient_ids').on('change', function() {
+            updateRecipientSummary();
+            updateDistributionPreview();
+        });
+        
+        // Distribution preview
+        function updateDistributionPreview() {
+            const selectedAccountIds = $('.email-account-checkbox:checked').map(function() {
+                return $(this).val();
+            }).get();
+            
+            const recipientCount = getSelectedRecipientCount();
+            const timeGap = parseInt($('#time_gap').val()) || 15;
+            const timeUnit = $('#time_unit').val();
+            
+            if (selectedAccountIds.length > 0 && recipientCount > 0) {
+                // Calculate recipients per account
+                const recipientsPerAccount = Math.ceil(recipientCount / selectedAccountIds.length);
+                
+                // Calculate estimated completion time
+                const minuteMultiplier = (timeUnit === 'hours') ? 60 : 1;
+                const totalMinutes = (recipientsPerAccount - 1) * timeGap * minuteMultiplier;
+                const hours = Math.floor(totalMinutes / 60);
+                const minutes = totalMinutes % 60;
+                
+                let completionTimeText = '';
+                if (hours > 0) {
+                    completionTimeText += hours + ' hour' + (hours !== 1 ? 's' : '') + ' ';
+                }
+                if (minutes > 0 || hours === 0) {
+                    completionTimeText += minutes + ' minute' + (minutes !== 1 ? 's' : '');
+                }
+                
+                // Add distribution preview to summary
+                $('#summary-distribution').html(`
+                    <div class="alert alert-info mt-3">
+                        <h6><i class="fas fa-table"></i> Distribution Preview</h6>
+                        <ul>
+                            <li><strong>Recipients per account:</strong> ~${recipientsPerAccount}</li>
+                            <li><strong>Time between emails:</strong> ${timeGap} ${timeUnit}</li>
+                            <li><strong>Estimated completion:</strong> ${completionTimeText}</li>
+                        </ul>
+                    </div>
+                `);
+            } else {
+                $('#summary-distribution').html('');
+            }
+        }
+        
+        // Store accounts data for JavaScript access
+        const accountsData = [
+            {% for account in accounts %}
+            {
+                id: {{ account.id }},
+                name: "{{ account.name }}",
+                email: "{{ account.email }}",
+                dailyLimit: {{ account.daily_limit }},
+                sentToday: {{ account.sent_today }},
+                remainingToday: {{ account.remaining_today }}
+            }{% if not loop.last %},{% endif %}
+            {% endfor %}
+        ];
+        
+        // Update account summary
+        function updateAccountSummary() {
+            const selectedAccountIds = $('.email-account-checkbox:checked').map(function() {
+                return parseInt($(this).val());
+            }).get();
+            
+            if (selectedAccountIds.length > 0) {
+                // Calculate totals
+                let totalDailyLimit = 0;
+                let totalRemaining = 0;
+                const selectedAccounts = accountsData.filter(account => selectedAccountIds.includes(account.id));
+                
+                selectedAccounts.forEach(account => {
+                    totalDailyLimit += account.dailyLimit;
+                    totalRemaining += account.remainingToday;
+                });
+                
+                $('#account-summary').removeClass('d-none');
+                $('#selected-account-count').text(selectedAccountIds.length);
+                $('#total-daily-limit').text(totalDailyLimit);
+                $('#total-remaining').text(totalRemaining);
+                
+                // Display selected accounts in summary
+                const accountNames = selectedAccounts.map(account => account.name);
+                $('#summary-accounts').html(accountNames.join('<br>'));
+            } else {
+                $('#account-summary').addClass('d-none');
+                $('#summary-accounts').text('Not selected');
+            }
+        }
+        
+        // Helper function to get recipient count
+        function getSelectedRecipientCount() {
+            const method = $('input[name="selection_method"]:checked').val();
+            
+            if (method === 'individual') {
+                return $('#recipient_ids').val() ? $('#recipient_ids').val().length : 0;
+            } else if (method === 'import') {
+                return parseInt($('#import_id option:selected').data('count') || 0);
+            } else if (method === 'all') {
+                return {{ recipients|length }};
+            }
+            
+            return 0;
+        }
+        
+        // Update recipient summary
+        function updateRecipientSummary() {
+            const method = $('input[name="selection_method"]:checked').val();
+            const count = getSelectedRecipientCount();
+            
+            if (method === 'individual') {
+                $('#summary-recipients').text(count > 0 ? `${count} selected recipients` : 'None selected');
+            } else if (method === 'import') {
+                const importName = $('#import_id option:selected').text();
+                $('#summary-recipients').text(count > 0 ? `${count} recipients from import: ${importName}` : 'No import selected');
+            } else if (method === 'all') {
+                $('#summary-recipients').text(`All recipients (${count})`);
+            }
+            
+            updateDistributionPreview();
+        }
+        
+        // Initialize selections
+        $('input[name="selection_method"]:first').prop('checked', true).trigger('change');
+});
+</script>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle recipient selection method toggle
+        const individualSelect = document.getElementById('individual-selection');
+        const importSelect = document.getElementById('import-selection');
+        const recentImportSelect = document.getElementById('recent-import-selection');
+        
+        const individualSection = document.getElementById('individual-section');
+        const importSection = document.getElementById('import-section');
+        const recentImportSection = document.getElementById('recent-import-section');
+        
+        individualSelect.addEventListener('change', function() {
+            if (this.checked) {
+                individualSection.classList.remove('d-none');
+                importSection.classList.add('d-none');
+                recentImportSection.classList.add('d-none');
+            }
+        });
+        
+        importSelect.addEventListener('change', function() {
+            if (this.checked) {
+                individualSection.classList.add('d-none');
+                importSection.classList.remove('d-none');
+                recentImportSection.classList.add('d-none');
+            }
+        });
+        
+        recentImportSelect.addEventListener('change', function() {
+            if (this.checked) {
+                individualSection.classList.add('d-none');
+                importSection.classList.add('d-none');
+                recentImportSection.classList.remove('d-none');
+            }
+        });
+        
+        // Handle account selection and update summary
+        const accountCheckboxes = document.querySelectorAll('.email-account-checkbox');
+        const accountSummary = document.getElementById('account-summary');
+        const selectedAccountCount = document.getElementById('selected-account-count');
+        const totalDailyLimit = document.getElementById('total-daily-limit');
+        const totalRemaining = document.getElementById('total-remaining');
+        
+        accountCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateAccountSummary);
+        });
+        
+        function updateAccountSummary() {
+            let count = 0;
+            let dailyLimit = 0;
+            let remaining = 0;
+            
+            accountCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    count++;
+                    dailyLimit += parseInt(checkbox.dataset.dailyLimit || 0);
+                    remaining += parseInt(checkbox.dataset.remainingLimit || 0);
+                }
+            });
+            
+            selectedAccountCount.textContent = count;
+            totalDailyLimit.textContent = dailyLimit;
+            totalRemaining.textContent = remaining;
+            
+            if (count > 0) {
+                accountSummary.classList.remove('d-none');
+            } else {
+                accountSummary.classList.add('d-none');
+            }
+        }
+        
+        // Handle scheduling method toggle
+        const humanLikeRadio = document.getElementById('human_like');
+        const fixedIntervalRadio = document.getElementById('fixed_interval');
+        const humanLikeOptions = document.getElementById('human_like_options');
+        const fixedIntervalOptions = document.getElementById('fixed_interval_options');
+        
+        humanLikeRadio.addEventListener('change', function() {
+            if (this.checked) {
+                humanLikeOptions.style.display = 'block';
+                fixedIntervalOptions.style.display = 'none';
+            }
+        });
+        
+        fixedIntervalRadio.addEventListener('change', function() {
+            if (this.checked) {
+                humanLikeOptions.style.display = 'none';
+                fixedIntervalOptions.style.display = 'block';
+            }
+        });
+        
+        // Initialize account summary
+        updateAccountSummary();
+    });
+</script>
+{% endblock %} 

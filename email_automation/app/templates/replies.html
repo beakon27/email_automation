@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Email Replies{% endblock %}
+
+{% block content %}
+<div class="container-fluid px-4">
+    <h1 class="mt-4">Email Replies</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item"><a href="{{ url_for('index') }}">Dashboard</a></li>
+        <li class="breadcrumb-item active">Replies</li>
+    </ol>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-comment me-1"></i>
+            Real-time Email Replies
+            <div class="float-end">
+                <span id="connection-status" class="badge bg-secondary">Connecting...</span>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover" id="repliesTable">
+                    <thead>
+                        <tr>
+                            <th>From</th>
+                            <th>Subject</th>
+                            <th>Reply Content</th>
+                            <th>Received At</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for email in replied_emails %}
+                        <tr>
+                            <td>{{ email.recipient.email }}</td>
+                            <td>{{ email.response_subject }}</td>
+                            <td>
+                                <div class="reply-content" style="max-height: 100px; overflow-y: auto;">
+                                    {{ email.response_content | safe }}
+                                </div>
+                            </td>
+                            <td>{{ email.response_received_at.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                            <td>
+                                <a href="{{ url_for('view_email', id=email.id) }}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+    $(document).ready(function() {
+        // Initialize DataTable
+        const table = $('#repliesTable').DataTable({
+            order: [[3, 'desc']], // Sort by received date
+            responsive: true
+        });
+
+        // Initialize Socket.IO
+        const socket = io();
+        const statusBadge = $('#connection-status');
+
+        socket.on('connect', function() {
+            statusBadge.removeClass('bg-secondary bg-danger').addClass('bg-success')
+                .text('Connected');
+        });
+
+        socket.on('disconnect', function() {
+            statusBadge.removeClass('bg-success bg-secondary').addClass('bg-danger')
+                .text('Disconnected');
+        });
+
+        socket.on('new_reply', function(data) {
+            // Add new reply to the table
+            table.row.add([
+                data.recipient_email,
+                data.subject,
+                `<div class="reply-content" style="max-height: 100px; overflow-y: auto;">${data.content}</div>`,
+                new Date(data.received_at).toLocaleString(),
+                `<a href="/emails/${data.email_id}" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i> View</a>`
+            ]).draw(false);
+        });
+    });
+</script>
+{% endblock %} 

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Recipient - Email Automation System{% endblock %}
+
+{% block page_title %}Edit Recipient{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('recipients') }}" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Back to Recipients
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6 mx-auto">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Edit Recipient</h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('edit_recipient', id=recipient.id) }}" method="post">
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" value="{{ recipient.email }}" required>
+                        <div class="form-text">Enter a valid email address that isn't already in the system.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">First Name (Optional)</label>
+                        <input type="text" class="form-control" id="first_name" name="first_name" value="{{ recipient.first_name or '' }}">
+                        <div class="form-text">If left blank, a name will be extracted from the email address.</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Extracted First Name</label>
+                        <input type="text" class="form-control" value="{{ recipient.derived_first_name }}" disabled>
+                        <div class="form-text">This is the name that will be used if no first name is provided.</div>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Update Recipient
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

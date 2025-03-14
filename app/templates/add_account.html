@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Beakon Solutions - Add Email Account{% endblock %}
+
+{% block page_title %}Add Email Account{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('accounts') }}" class="btn btn-outline-secondary">
+    <i class="fas fa-arrow-left me-1"></i> Back to Accounts
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <div class="card">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">Add New Email Account</h5>
+            </div>
+            <div class="card-body">
+                <form action="{{ url_for('add_account') }}" method="post">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Account Name</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                        <div class="form-text">A friendly name to identify this account (e.g., "Work Gmail")</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                        <div class="form-text">The email address to send from</div>
+                    </div>
+                    
+                    <h5 class="mt-4 border-bottom pb-2">SMTP Settings (For Sending Emails)</h5>
+                    
+                    <div class="mb-3">
+                        <label for="smtp_server" class="form-label">SMTP Server</label>
+                        <input type="text" class="form-control" id="smtp_server" name="smtp_server" required>
+                        <div class="form-text">Your email provider's SMTP server (e.g., smtp.gmail.com)</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="smtp_port" class="form-label">SMTP Port</label>
+                        <input type="number" class="form-control" id="smtp_port" name="smtp_port" value="465" required>
+                        <div class="form-text">Usually 465 for SSL or 587 for TLS</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="smtp_username" class="form-label">SMTP Username</label>
+                        <input type="text" class="form-control" id="smtp_username" name="smtp_username" required>
+                        <div class="form-text">Usually the same as your email address</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="smtp_password" class="form-label">SMTP Password</label>
+                        <input type="password" class="form-control" id="smtp_password" name="smtp_password" required>
+                        <div class="form-text">For Gmail, you may need to create an App Password</div>
+                    </div>
+                    
+                    <h5 class="mt-4 border-bottom pb-2">IMAP Settings (For Reading Replies)</h5>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="imap_enabled" name="imap_enabled" checked>
+                        <label class="form-check-label" for="imap_enabled">Enable reply checking with IMAP</label>
+                        <div class="form-text">This allows the system to check for replies to your emails</div>
+                    </div>
+                    
+                    <div id="imap_settings">
+                        <div class="mb-3">
+                            <label for="imap_server" class="form-label">IMAP Server</label>
+                            <input type="text" class="form-control" id="imap_server" name="imap_server">
+                            <div class="form-text">Your email provider's IMAP server (e.g., imap.gmail.com)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="imap_port" class="form-label">IMAP Port</label>
+                            <input type="number" class="form-control" id="imap_port" name="imap_port" value="993">
+                            <div class="form-text">Usually 993 for SSL (most common)</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="imap_username" class="form-label">IMAP Username</label>
+                            <input type="text" class="form-control" id="imap_username" name="imap_username">
+                            <div class="form-text">Usually the same as your SMTP username</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="imap_password" class="form-label">IMAP Password</label>
+                            <input type="password" class="form-control" id="imap_password" name="imap_password">
+                            <div class="form-text">Usually the same as your SMTP password</div>
+                        </div>
+                    </div>
+                    
+                    <h5 class="mt-4 border-bottom pb-2">Account Settings</h5>
+                    
+                    <div class="mb-3">
+                        <label for="daily_limit" class="form-label">Daily Sending Limit</label>
+                        <input type="number" class="form-control" id="daily_limit" name="daily_limit" value="50" required>
+                        <div class="form-text">Maximum number of emails to send per day (default: 50)</div>
+                    </div>
+                    
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i> <strong>Email Server Settings:</strong>
+                        <ul class="mb-0">
+                            <li><strong>Gmail:</strong> SMTP: smtp.gmail.com (465/SSL), IMAP: imap.gmail.com (993/SSL)</li>
+                            <li><strong>Outlook/Hotmail:</strong> SMTP: smtp.office365.com (587), IMAP: outlook.office365.com (993/SSL)</li>
+                            <li><strong>Yahoo:</strong> SMTP: smtp.mail.yahoo.com (465/SSL), IMAP: imap.mail.yahoo.com (993/SSL)</li>
+                            <li>For Gmail, you'll need to use an App Password if you have 2-factor authentication enabled</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i> Add Account
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        // Toggle IMAP settings visibility based on checkbox
+        $('#imap_enabled').change(function() {
+            if($(this).is(':checked')) {
+                $('#imap_settings').slideDown();
+                
+                // Auto-fill IMAP fields based on SMTP if empty
+                if (!$('#imap_server').val()) {
+                    let smtp = $('#smtp_server').val();
+                    if (smtp) {
+                        // Convert smtp to imap server
+                        let imap = smtp.replace('smtp', 'imap');
+                        $('#imap_server').val(imap);
+                    }
+                }
+                
+                if (!$('#imap_username').val()) {
+                    $('#imap_username').val($('#smtp_username').val());
+                }
+                
+                if (!$('#imap_password').val()) {
+                    // Don't auto-copy password for security reasons
+                    // But at least indicate it's needed
+                    $('#imap_password').attr('placeholder', 'Required for IMAP access');
+                }
+            } else {
+                $('#imap_settings').slideUp();
+            }
+        });
+        
+        // Initialize on page load
+        $('#imap_enabled').trigger('change');
+        
+        // When SMTP server changes, suggest IMAP server
+        $('#smtp_server').on('blur', function() {
+            if ($('#imap_enabled').is(':checked') && !$('#imap_server').val()) {
+                let smtp = $(this).val();
+                if (smtp) {
+                    // Convert smtp to imap server
+                    let imap = smtp.replace('smtp', 'imap');
+                    $('#imap_server').val(imap);
+                }
+            }
+        });
+        
+        // Copy SMTP username to IMAP username if empty
+        $('#smtp_username').on('blur', function() {
+            if ($('#imap_enabled').is(':checked') && !$('#imap_username').val()) {
+                $('#imap_username').val($(this).val());
+            }
+        });
+    });
+</script>
+{% endblock %} 

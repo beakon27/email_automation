@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
+    },
+    {
+      "src": "app/static/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/static/(.*)",
+      "dest": "/app/static/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/api/index.py"
+    }
+  ],
+  "env": {
+    "FLASK_ENV": "production",
+    "FLASK_APP": "api/index.py"
+  },
+  "crons": [
+    {
+      "path": "/api/process_emails.py",
+      "schedule": "*/1 * * * *"
+    },
+    {
+      "path": "/api/check_replies.py",
+      "schedule": "*/2 * * * *"
+    }
+  ]
+} 

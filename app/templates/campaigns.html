@@ -1,0 +1,350 @@
+{% extends "base.html" %}
+
+{% block title %}Beakon Solutions - Email Campaigns{% endblock %}
+
+{% block page_title %}Email Campaigns{% endblock %}
+
+{% block page_actions %}
+<a href="{{ url_for('new_campaign') }}" class="btn btn-primary">
+    <i class="fas fa-plus me-1"></i> New Campaign
+</a>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .countdown-timer {
+        font-family: 'Courier New', monospace;
+        font-weight: bold;
+        padding: 3px 8px;
+        border-radius: 3px;
+        display: inline-block;
+        min-width: 80px;
+        text-align: center;
+    }
+    
+    @keyframes pulse {
+        0% { opacity: 1; }
+        50% { opacity: 0.7; }
+        100% { opacity: 1; }
+    }
+    
+    .countdown-timer.bg-warning {
+        animation: pulse 1s infinite;
+    }
+    
+    .countdown-timer.bg-danger {
+        animation: pulse 0.5s infinite;
+    }
+    
+    .email-row {
+        border-left: 3px solid #0d6efd;
+        padding: 10px;
+        margin-bottom: 10px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+    
+    .email-row:hover {
+        background-color: #e9ecef;
+    }
+    
+    .campaign-emails {
+        margin-top: 10px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">All Campaigns</h5>
+            </div>
+            <div class="card-body">
+                {% if campaigns %}
+                <div class="accordion" id="campaignsAccordion">
+                    {% for campaign in campaigns %}
+                    <div class="accordion-item mb-3">
+                        <h2 class="accordion-header" id="heading{{ campaign.id }}">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ campaign.id }}" aria-expanded="false" aria-controls="collapse{{ campaign.id }}">
+                                <div class="d-flex justify-content-between align-items-center w-100">
+                                    <div>
+                                        <strong>{{ campaign.name }}</strong> 
+                                        ({{ campaign.template.name if campaign.template else 'N/A' }})
+                                    </div>
+                                    <div>
+                                        {% if campaign.status == 'active' %}
+                                        <span class="badge bg-success">Active</span>
+                                        {% elif campaign.status == 'paused' %}
+                                        <span class="badge bg-warning">Paused</span>
+                                        {% elif campaign.status == 'completed' %}
+                                        <span class="badge bg-info">Completed</span>
+                                        {% elif campaign.status == 'deleted' %}
+                                        <span class="badge bg-danger">Deleted</span>
+                                        {% else %}
+                                        <span class="badge bg-secondary">{{ campaign.status }}</span>
+                                        {% endif %}
+                                        
+                                        <span class="badge bg-primary ms-2">{{ campaign.total_emails }} emails</span>
+                                        <span class="ms-2 small text-muted">{{ campaign.created_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                                    </div>
+                                </div>
+                            </button>
+                        </h2>
+                        <div id="collapse{{ campaign.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ campaign.id }}" data-bs-parent="#campaignsAccordion">
+                            <div class="accordion-body">
+                                <!-- Campaign Stats -->
+                                <div class="row mb-3">
+                                    <div class="col-md-12">
+                                        <div class="card bg-light">
+                                            <div class="card-body">
+                                                <div class="row text-center">
+                                                    <div class="col">
+                                                        <h6>Total</h6>
+                                                        <h4>{{ campaign.total_emails }}</h4>
+                                                    </div>
+                                                    <div class="col">
+                                                        <h6>Pending</h6>
+                                                        <h4>{{ campaign.pending_emails }}</h4>
+                                                    </div>
+                                                    <div class="col">
+                                                        <h6>Sent</h6>
+                                                        <h4>{{ campaign.sent_emails }}</h4>
+                                                    </div>
+                                                    <div class="col">
+                                                        <h6>Paused</h6>
+                                                        <h4>{{ campaign.paused_emails }}</h4>
+                                                    </div>
+                                                    <div class="col">
+                                                        <h6>Responded</h6>
+                                                        <h4>{{ campaign.responded_emails }}</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Campaign Actions -->
+                                <div class="mb-3">
+                                    <div class="btn-group">
+                                        {% if campaign.status == 'active' and campaign.pending_emails > 0 %}
+                                        <form action="{{ url_for('pause_campaign', id=campaign.id) }}" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-warning">
+                                                <i class="fas fa-pause"></i> Pause Campaign
+                                            </button>
+                                        </form>
+                                        {% elif campaign.status == 'paused' and campaign.paused_emails > 0 %}
+                                        <form action="{{ url_for('resume_campaign', id=campaign.id) }}" method="post" class="d-inline">
+                                            <button type="submit" class="btn btn-success">
+                                                <i class="fas fa-play"></i> Resume Campaign
+                                            </button>
+                                        </form>
+                                        {% endif %}
+                                        
+                                        {% if campaign.status != 'deleted' and (campaign.pending_emails > 0 or campaign.paused_emails > 0) %}
+                                        <button type="button" class="btn btn-danger delete-campaign-btn" 
+                                                data-campaign-id="{{ campaign.id }}" 
+                                                data-campaign-name="{{ campaign.name }}"
+                                                data-pending-count="{{ campaign.pending_emails + campaign.paused_emails }}">
+                                            <i class="fas fa-trash"></i> Delete Campaign
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Campaign Emails -->
+                                {% if campaign_emails[campaign.id] %}
+                                <div class="mt-4">
+                                    <h5 class="border-bottom pb-2 mb-3">Scheduled Emails</h5>
+                                    
+                                    <div class="table-responsive">
+                                        <table class="table table-striped table-bordered">
+                                            <thead class="table-dark">
+                                                <tr>
+                                                    <th style="width: 5%">#</th>
+                                                    <th style="width: 20%">Sending Time</th>
+                                                    <th style="width: 25%">Recipient</th>
+                                                    <th style="width: 20%">From Account</th>
+                                                    <th style="width: 15%">Status</th>
+                                                    <th style="width: 15%">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for email in campaign_emails[campaign.id] %}
+                                                <tr>
+                                                    <td class="align-middle">{{ loop.index }}</td>
+                                                    <td class="align-middle">
+                                                        {% if email.id in email_time_info %}
+                                                        <span class="d-block fw-bold text-primary">{{ email_time_info[email.id]['sequential_time'] }}</span>
+                                                        <small class="text-muted">{{ email.scheduled_at.strftime('%Y-%m-%d') }}</small>
+                                                        <div class="mt-1">
+                                                            <span class="badge bg-success countdown-timer" data-send-time="{{ email_time_info[email.id]['sequential_time_iso'] }}" data-email-id="{{ email.id }}">
+                                                                <i class="fas fa-clock me-1"></i> <span class="countdown-display">{{ email_time_info[email.id]['time_remaining'] }}</span>
+                                                            </span>
+                                                        </div>
+                                                        {% if email_time_info[email.id]['position'] > 1 %}
+                                                        <span class="badge bg-info" title="Time gap from previous email">
+                                                            <i class="fas fa-stopwatch me-1"></i> {{ email_time_info[email.id]['gap_minutes'] }} min gap
+                                                        </span>
+                                                        {% endif %}
+                                                        {% else %}
+                                                        <span class="text-muted">Not scheduled</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="align-middle">{{ email.recipient.email }}</td>
+                                                    <td class="align-middle">{{ email.account.email }}</td>
+                                                    <td class="align-middle">
+                                                        {% if email.status.value == 'pending' %}
+                                                        <span class="badge bg-primary">Pending</span>
+                                                        {% elif email.status.value == 'sent' %}
+                                                        <span class="badge bg-success">Sent</span>
+                                                        <small class="d-block text-muted">{{ email.sent_at.strftime('%Y-%m-%d %H:%M') if email.sent_at else 'Unknown' }}</small>
+                                                        {% elif email.status.value == 'paused' %}
+                                                        <span class="badge bg-warning">Paused</span>
+                                                        {% elif email.status.value == 'failed' %}
+                                                        <span class="badge bg-danger">Failed</span>
+                                                        {% elif email.status.value == 'responded' %}
+                                                        <span class="badge bg-info">Responded</span>
+                                                        <small class="d-block text-muted">{{ email.response_received_at.strftime('%Y-%m-%d %H:%M') if email.response_received_at else 'Unknown' }}</small>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td class="align-middle">
+                                                        <div class="btn-group btn-group-sm">
+                                                            <a href="{{ url_for('view_email', id=email.id) }}" class="btn btn-outline-primary">
+                                                                <i class="fas fa-eye"></i>
+                                                            </a>
+                                                            {% if email.status.value == 'pending' %}
+                                                            <form action="{{ url_for('send_email_now', id=email.id) }}" method="post" class="d-inline">
+                                                                <button type="submit" class="btn btn-outline-success">
+                                                                    <i class="fas fa-paper-plane"></i>
+                                                                </button>
+                                                            </form>
+                                                            {% endif %}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i> No emails found for this campaign.
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="mb-3">
+                        <i class="fas fa-envelope fa-4x text-muted"></i>
+                    </div>
+                    <h4 class="text-muted">No Campaigns</h4>
+                    <p class="text-muted">You haven't created any email campaigns yet.</p>
+                    <div class="mt-3">
+                        <a href="{{ url_for('new_campaign') }}" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i> Create New Campaign
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Campaign Confirmation Modal -->
+<div class="modal fade" id="deleteCampaignModal" tabindex="-1" aria-labelledby="deleteCampaignModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteCampaignModalLabel">Confirm Campaign Deletion</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the campaign "<strong id="campaignName"></strong>"?</p>
+                <p>This will cancel <strong id="pendingCount"></strong> pending emails.</p>
+                <p class="text-danger"><i class="fas fa-exclamation-triangle me-2"></i> This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form id="deleteCampaignForm" method="post">
+                    <button type="submit" class="btn btn-danger">Delete Campaign</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle delete campaign buttons
+        const deleteCampaignButtons = document.querySelectorAll('.delete-campaign-btn');
+        const deleteCampaignModal = new bootstrap.Modal(document.getElementById('deleteCampaignModal'));
+        
+        deleteCampaignButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const campaignId = this.getAttribute('data-campaign-id');
+                const campaignName = this.getAttribute('data-campaign-name');
+                const pendingCount = this.getAttribute('data-pending-count');
+                
+                // Set form action
+                document.getElementById('deleteCampaignForm').action = `/campaign/${campaignId}/delete`;
+                
+                // Set campaign name and pending count in confirmation message
+                document.getElementById('campaignName').textContent = campaignName;
+                document.getElementById('pendingCount').textContent = pendingCount;
+                
+                // Show modal
+                deleteCampaignModal.show();
+            });
+        });
+        
+        // Countdown timers
+        function updateCountdowns() {
+            const now = new Date();
+            
+            document.querySelectorAll('.countdown-timer').forEach(timer => {
+                const sendTimeStr = timer.getAttribute('data-send-time');
+                if (!sendTimeStr) return;
+                
+                const sendTime = new Date(sendTimeStr);
+                const timeRemaining = Math.max(0, Math.floor((sendTime - now) / 1000));
+                
+                const hours = Math.floor(timeRemaining / 3600);
+                const minutes = Math.floor((timeRemaining % 3600) / 60);
+                const seconds = timeRemaining % 60;
+                
+                const display = timer.querySelector('.countdown-display');
+                display.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update timer color based on time remaining
+                timer.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+                
+                if (timeRemaining <= 0) {
+                    timer.classList.add('bg-danger');
+                    display.textContent = "NOW!";
+                } else if (timeRemaining < 300) { // less than 5 minutes
+                    timer.classList.add('bg-danger');
+                } else if (timeRemaining < 1800) { // less than 30 minutes
+                    timer.classList.add('bg-warning');
+                } else {
+                    timer.classList.add('bg-success');
+                }
+            });
+        }
+        
+        // Update countdowns every second
+        setInterval(updateCountdowns, 1000);
+        updateCountdowns();
+    });
+</script>
+{% endblock %} 

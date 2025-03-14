@@ -1,0 +1,396 @@
+2025-03-12 15:38:10,417 INFO: Beakon Solutions system startup [in D:\W\email_automation\app\__init__.py:72]
+2025-03-12 15:38:10,435 ERROR: Error updating database schema: The argument passed to Dialect.has_table() should be a <class 'sqlalchemy.engine.base.Connection'>, got <class 'sqlalchemy.engine.base.Engine'>. Additionally, the Dialect.has_table() method is for internal dialect use only; please use ``inspect(some_engine).has_table(<tablename>>)`` for public API use. [in D:\W\email_automation\app\__init__.py:103]
+2025-03-12 15:38:10,436 INFO: Refreshing SQLAlchemy metadata [in D:\W\email_automation\app\__init__.py:108]
+2025-03-12 15:38:10,437 INFO: SQLAlchemy metadata refreshed [in D:\W\email_automation\app\__init__.py:110]
+2025-03-12 15:38:10,437 INFO: Initializing SocketIO for real-time updates [in D:\W\email_automation\app\__init__.py:115]
+2025-03-12 15:38:10,668 INFO: Starting Beakon Solutions Server... [in D:\W\email_automation\app.py:23]
+[2025-03-12 15:38:10,668] INFO in app: Starting Beakon Solutions Server...
+2025-03-12 15:38:10,668 INFO: Initializing email scheduler [in D:\W\email_automation\app\utils\scheduler_utils.py:32]
+[2025-03-12 15:38:10,668] INFO in scheduler_utils: Initializing email scheduler
+2025-03-12 15:38:10,676 INFO: Starting check for email replies across all accounts [in D:\W\email_automation\app\utils\scheduler_utils.py:74]
+[2025-03-12 15:38:10,676] INFO in scheduler_utils: Starting check for email replies across all accounts
+2025-03-12 15:38:10,676 INFO: Email scheduler initialized - emails checked every 30s, replies every 2min [in D:\W\email_automation\app\utils\scheduler_utils.py:66]
+[2025-03-12 15:38:10,676] INFO in scheduler_utils: Email scheduler initialized - emails checked every 30s, replies every 2min
+2025-03-12 15:38:10,680 INFO: Checking 19 accounts for email replies [in D:\W\email_automation\app\utils\scheduler_utils.py:81]
+[2025-03-12 15:38:10,680] INFO in scheduler_utils: Checking 19 accounts for email replies
+2025-03-12 15:38:10,680 INFO: Checking replies for account: business@beakonagency.com [in D:\W\email_automation\app\utils\scheduler_utils.py:86]
+[2025-03-12 15:38:10,680] INFO in scheduler_utils: Checking replies for account: business@beakonagency.com
+[2025-03-12 15:38:10,685] WARNING in _internal:  * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+[2025-03-12 15:38:10,685] INFO in _internal:  * Running on http://192.168.1.107:5002/ (Press CTRL+C to quit)
+2025-03-12 15:38:12,049 ERROR: Error processing email b'26': name 'email' is not defined [in D:\W\email_automation\app\utils\email_utils.py:501]
+[2025-03-12 15:38:12,049] ERROR in email_utils: Error processing email b'26': name 'email' is not defined
+2025-03-12 15:38:12,050 ERROR: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+ [in D:\W\email_automation\app\utils\email_utils.py:502]
+[2025-03-12 15:38:12,050] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+2025-03-12 15:38:12,208 ERROR: Error processing email b'25': name 'email' is not defined [in D:\W\email_automation\app\utils\email_utils.py:501]
+[2025-03-12 15:38:12,208] ERROR in email_utils: Error processing email b'25': name 'email' is not defined
+2025-03-12 15:38:12,209 ERROR: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+ [in D:\W\email_automation\app\utils\email_utils.py:502]
+[2025-03-12 15:38:12,209] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+2025-03-12 15:38:12,364 ERROR: Error processing email b'24': name 'email' is not defined [in D:\W\email_automation\app\utils\email_utils.py:501]
+[2025-03-12 15:38:12,364] ERROR in email_utils: Error processing email b'24': name 'email' is not defined
+2025-03-12 15:38:12,365 ERROR: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+ [in D:\W\email_automation\app\utils\email_utils.py:502]
+[2025-03-12 15:38:12,365] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+2025-03-12 15:38:12,522 ERROR: Error processing email b'23': name 'email' is not defined [in D:\W\email_automation\app\utils\email_utils.py:501]
+[2025-03-12 15:38:12,522] ERROR in email_utils: Error processing email b'23': name 'email' is not defined
+2025-03-12 15:38:12,523 ERROR: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+ [in D:\W\email_automation\app\utils\email_utils.py:502]
+[2025-03-12 15:38:12,523] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+2025-03-12 15:38:12,685 ERROR: Error processing email b'22': name 'email' is not defined [in D:\W\email_automation\app\utils\email_utils.py:501]
+[2025-03-12 15:38:12,685] ERROR in email_utils: Error processing email b'22': name 'email' is not defined
+2025-03-12 15:38:12,685 ERROR: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+ [in D:\W\email_automation\app\utils\email_utils.py:502]
+[2025-03-12 15:38:12,685] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+2025-03-12 15:38:12,843 ERROR: Error processing email b'21': name 'email' is not defined [in D:\W\email_automation\app\utils\email_utils.py:501]
+[2025-03-12 15:38:12,843] ERROR in email_utils: Error processing email b'21': name 'email' is not defined
+2025-03-12 15:38:12,844 ERROR: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+ [in D:\W\email_automation\app\utils\email_utils.py:502]
+[2025-03-12 15:38:12,844] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+2025-03-12 15:38:13,001 ERROR: Error processing email b'20': name 'email' is not defined [in D:\W\email_automation\app\utils\email_utils.py:501]
+[2025-03-12 15:38:13,001] ERROR in email_utils: Error processing email b'20': name 'email' is not defined
+2025-03-12 15:38:13,002 ERROR: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+ [in D:\W\email_automation\app\utils\email_utils.py:502]
+[2025-03-12 15:38:13,002] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+2025-03-12 15:38:13,158 ERROR: Error processing email b'19': name 'email' is not defined [in D:\W\email_automation\app\utils\email_utils.py:501]
+[2025-03-12 15:38:13,158] ERROR in email_utils: Error processing email b'19': name 'email' is not defined
+2025-03-12 15:38:13,159 ERROR: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+ [in D:\W\email_automation\app\utils\email_utils.py:502]
+[2025-03-12 15:38:13,159] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+2025-03-12 15:38:13,347 ERROR: Error processing email b'18': name 'email' is not defined [in D:\W\email_automation\app\utils\email_utils.py:501]
+[2025-03-12 15:38:13,347] ERROR in email_utils: Error processing email b'18': name 'email' is not defined
+2025-03-12 15:38:13,349 ERROR: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+ [in D:\W\email_automation\app\utils\email_utils.py:502]
+[2025-03-12 15:38:13,349] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+2025-03-12 15:38:13,506 ERROR: Error processing email b'17': name 'email' is not defined [in D:\W\email_automation\app\utils\email_utils.py:501]
+[2025-03-12 15:38:13,506] ERROR in email_utils: Error processing email b'17': name 'email' is not defined
+[2025-03-12 15:38:13,506] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:13,663] ERROR in email_utils: Error processing email b'16': name 'email' is not defined
+[2025-03-12 15:38:13,666] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:13,822] ERROR in email_utils: Error processing email b'15': name 'email' is not defined
+[2025-03-12 15:38:13,825] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:13,980] ERROR in email_utils: Error processing email b'14': name 'email' is not defined
+[2025-03-12 15:38:13,983] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:14,140] ERROR in email_utils: Error processing email b'13': name 'email' is not defined
+[2025-03-12 15:38:14,142] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:14,300] ERROR in email_utils: Error processing email b'12': name 'email' is not defined
+[2025-03-12 15:38:14,302] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:14,463] ERROR in email_utils: Error processing email b'11': name 'email' is not defined
+[2025-03-12 15:38:14,466] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:14,632] ERROR in email_utils: Error processing email b'10': name 'email' is not defined
+[2025-03-12 15:38:14,634] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:14,795] ERROR in email_utils: Error processing email b'9': name 'email' is not defined
+[2025-03-12 15:38:14,797] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:14,959] ERROR in email_utils: Error processing email b'8': name 'email' is not defined
+[2025-03-12 15:38:14,961] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:15,121] ERROR in email_utils: Error processing email b'7': name 'email' is not defined
+[2025-03-12 15:38:15,122] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:15,278] ERROR in email_utils: Error processing email b'6': name 'email' is not defined
+[2025-03-12 15:38:15,280] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:15,437] ERROR in email_utils: Error processing email b'5': name 'email' is not defined
+[2025-03-12 15:38:15,438] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:15,596] ERROR in email_utils: Error processing email b'4': name 'email' is not defined
+[2025-03-12 15:38:15,598] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:15,757] ERROR in email_utils: Error processing email b'3': name 'email' is not defined
+[2025-03-12 15:38:15,758] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:16,244] ERROR in email_utils: Error processing email b'2': name 'email' is not defined
+[2025-03-12 15:38:16,247] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:16,404] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:16,407] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:16,719] INFO in email_utils: Completed check for account business@beakonagency.com, found 0 replies
+[2025-03-12 15:38:16,721] INFO in scheduler_utils: Checking replies for account: varshith@beakonagency.com
+[2025-03-12 15:38:18,055] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:18,057] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:18,383] INFO in email_utils: Completed check for account varshith@beakonagency.com, found 0 replies
+[2025-03-12 15:38:18,385] INFO in scheduler_utils: Checking replies for account: ridhit@beakonagency.com
+[2025-03-12 15:38:19,739] ERROR in email_utils: Error processing email b'2': name 'email' is not defined
+[2025-03-12 15:38:19,742] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:19,917] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:19,920] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:20,248] INFO in email_utils: Completed check for account ridhit@beakonagency.com, found 0 replies
+[2025-03-12 15:38:20,249] INFO in scheduler_utils: Checking replies for account: alex@beakonagency.com
+[2025-03-12 15:38:21,478] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:21,480] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:21,760] INFO in email_utils: Completed check for account alex@beakonagency.com, found 0 replies
+[2025-03-12 15:38:21,764] INFO in scheduler_utils: Checking replies for account: ethan@beakonagency.com
+[2025-03-12 15:38:22,974] ERROR in email_utils: Error processing email b'3': name 'email' is not defined
+[2025-03-12 15:38:22,976] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:23,118] ERROR in email_utils: Error processing email b'2': name 'email' is not defined
+[2025-03-12 15:38:23,121] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:23,288] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:23,291] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:23,569] INFO in email_utils: Completed check for account ethan@beakonagency.com, found 0 replies
+[2025-03-12 15:38:23,571] INFO in scheduler_utils: Checking replies for account: nova@beakonagency.com
+[2025-03-12 15:38:25,086] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:25,088] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:25,438] INFO in email_utils: Completed check for account nova@beakonagency.com, found 0 replies
+[2025-03-12 15:38:25,440] INFO in scheduler_utils: Checking replies for account: growth@beakonagency.com
+[2025-03-12 15:38:26,924] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:26,926] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:27,272] INFO in email_utils: Completed check for account growth@beakonagency.com, found 0 replies
+[2025-03-12 15:38:27,275] INFO in scheduler_utils: Checking replies for account: opportunities@beakonagency.com
+[2025-03-12 15:38:29,075] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:29,077] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:29,431] INFO in email_utils: Completed check for account opportunities@beakonagency.com, found 0 replies
+[2025-03-12 15:38:29,434] INFO in scheduler_utils: Checking replies for account: connect@beakonagency.com
+[2025-03-12 15:38:31,900] ERROR in email_utils: Error connecting to IMAP server: b'[AUTHENTICATIONFAILED] Authentication failed.'
+[2025-03-12 15:38:32,043] INFO in scheduler_utils: Checking replies for account: james@beakonagency.com
+[2025-03-12 15:38:33,525] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:33,527] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:33,871] INFO in email_utils: Completed check for account james@beakonagency.com, found 0 replies
+[2025-03-12 15:38:33,872] INFO in scheduler_utils: Checking replies for account: michael@beakonagency.com
+[2025-03-12 15:38:35,628] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:35,630] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:35,989] INFO in email_utils: Completed check for account michael@beakonagency.com, found 0 replies
+[2025-03-12 15:38:35,991] INFO in scheduler_utils: Checking replies for account: sarah@beakonagency.com
+[2025-03-12 15:38:37,492] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:37,494] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:37,839] INFO in email_utils: Completed check for account sarah@beakonagency.com, found 0 replies
+[2025-03-12 15:38:37,841] INFO in scheduler_utils: Checking replies for account: david@beakonagency.com
+[2025-03-12 15:38:39,320] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:39,323] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:39,668] INFO in email_utils: Completed check for account david@beakonagency.com, found 0 replies
+[2025-03-12 15:38:39,671] INFO in scheduler_utils: Checking replies for account: emily@beakonagency.com
+[2025-03-12 15:38:41,204] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:41,207] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:41,569] INFO in email_utils: Completed check for account emily@beakonagency.com, found 0 replies
+[2025-03-12 15:38:41,572] INFO in scheduler_utils: Checking replies for account: atlas@beakonagency.com
+[2025-03-12 15:38:43,653] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:43,657] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:44,060] INFO in email_utils: Completed check for account atlas@beakonagency.com, found 0 replies
+[2025-03-12 15:38:44,063] INFO in scheduler_utils: Checking replies for account: zion@beakonagency.com
+[2025-03-12 15:38:45,685] ERROR in email_utils: Error processing email b'1': name 'email' is not defined
+[2025-03-12 15:38:45,688] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 389, in check_for_replies
+    email_message = email.message_from_bytes(email_body)
+NameError: name 'email' is not defined
+
+[2025-03-12 15:38:46,057] INFO in email_utils: Completed check for account zion@beakonagency.com, found 0 replies
+[2025-03-12 15:38:46,059] INFO in scheduler_utils: Checking replies for account: upgrade@beakonagency.com
+[2025-03-12 15:38:46,066] ERROR in email_utils: Error connecting to IMAP server: [Errno 11003] getaddrinfo failed
+[2025-03-12 15:38:46,068] ERROR in email_utils: Error checking for replies: local variable 'imap' referenced before assignment
+[2025-03-12 15:38:46,071] ERROR in email_utils: Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 350, in check_for_replies
+    imap = imaplib.IMAP4_SSL(account.imap_server, account.imap_port)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\imaplib.py", line 1324, in __init__
+    IMAP4.__init__(self, host, port, timeout)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\imaplib.py", line 202, in __init__
+    self.open(host, port, timeout)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\imaplib.py", line 1337, in open
+    IMAP4.open(self, host, port, timeout)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\imaplib.py", line 312, in open
+    self.sock = self._create_socket(timeout)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\imaplib.py", line 1327, in _create_socket
+    sock = IMAP4._create_socket(self, timeout)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\imaplib.py", line 302, in _create_socket
+    return socket.create_connection(address)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\socket.py", line 823, in create_connection
+    for res in getaddrinfo(host, port, 0, SOCK_STREAM):
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python39\lib\socket.py", line 954, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+socket.gaierror: [Errno 11003] getaddrinfo failed
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\W\email_automation\app\utils\email_utils.py", line 374, in check_for_replies
+    imap.logout()
+UnboundLocalError: local variable 'imap' referenced before assignment
+
+[2025-03-12 15:38:46,075] INFO in scheduler_utils: Checking replies for account: websites@beakonagency.com

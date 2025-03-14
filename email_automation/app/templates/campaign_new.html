@@ -1,0 +1,138 @@
+<!-- Replace the single email account selection with a multiple selection -->
+<div class="form-group">
+    <label for="email_accounts">Email Accounts</label>
+    <div class="card mb-3">
+        <div class="card-header bg-light">
+            <div class="d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Select Multiple Email Accounts</h5>
+                <button type="button" class="btn btn-sm btn-outline-primary" id="selectAllAccounts">Select All</button>
+            </div>
+        </div>
+        <div class="card-body account-selection-container" style="max-height: 300px; overflow-y: auto;">
+            {% for account in accounts %}
+            <div class="custom-control custom-checkbox mb-2">
+                <input type="checkbox" class="custom-control-input email-account-checkbox" id="account-{{ account.id }}" name="account_ids" value="{{ account.id }}">
+                <label class="custom-control-label" for="account-{{ account.id }}">
+                    <strong>{{ account.name }}</strong> ({{ account.email }})
+                    <small class="text-muted d-block">Daily limit: {{ account.daily_limit }} | Remaining today: {{ account.daily_limit - account.get_sent_today() }}</small>
+                </label>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Add time configuration section -->
+<div class="form-group">
+    <label for="time_gap">Time Gap Between Emails</label>
+    <div class="input-group">
+        <input type="number" class="form-control" id="time_gap" name="time_gap" min="1" value="15">
+        <div class="input-group-append">
+            <select class="form-control" id="time_unit" name="time_unit">
+                <option value="minutes">Minutes</option>
+                <option value="hours">Hours</option>
+            </select>
+        </div>
+    </div>
+    <small class="form-text text-muted">Minimum time between emails from the same account.</small>
+</div>
+
+<!-- Add distribution preview section -->
+<div class="card mb-3" id="distributionPreview" style="display: none;">
+    <div class="card-header bg-info text-white">
+        <h5 class="mb-0">Distribution Preview</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <p><i class="fas fa-users"></i> Total Recipients: <span id="totalRecipients">0</span></p>
+                <p><i class="fas fa-envelope"></i> Selected Email Accounts: <span id="selectedAccountsCount">0</span></p>
+            </div>
+            <div class="col-md-6">
+                <p><i class="fas fa-exchange-alt"></i> Recipients per Account: <span id="recipientsPerAccount">0</span></p>
+                <p><i class="fas fa-clock"></i> Estimated Completion Time: <span id="completionTime">-</span></p>
+            </div>
+        </div>
+        <div class="progress mt-3">
+            <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 0%"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Add JavaScript to handle dynamic updates -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle select all button
+    document.getElementById('selectAllAccounts').addEventListener('click', function() {
+        var checkboxes = document.querySelectorAll('.email-account-checkbox');
+        var allChecked = true;
+        
+        // Check if all are already checked
+        checkboxes.forEach(function(checkbox) {
+            if (!checkbox.checked) allChecked = false;
+        });
+        
+        // Toggle accordingly
+        checkboxes.forEach(function(checkbox) {
+            checkbox.checked = !allChecked;
+        });
+        
+        updateDistributionPreview();
+    });
+    
+    // Update preview when any account checkbox changes
+    var accountCheckboxes = document.querySelectorAll('.email-account-checkbox');
+    accountCheckboxes.forEach(function(checkbox) {
+        checkbox.addEventListener('change', updateDistributionPreview);
+    });
+    
+    // Update preview when time gap changes
+    document.getElementById('time_gap').addEventListener('input', updateDistributionPreview);
+    document.getElementById('time_unit').addEventListener('change', updateDistributionPreview);
+    
+    // Initial preview update
+    updateDistributionPreview();
+    
+    function updateDistributionPreview() {
+        var selectedAccounts = document.querySelectorAll('.email-account-checkbox:checked');
+        var totalRecipients = parseInt(document.getElementById('recipientCount').textContent || 0);
+        var timeGap = parseInt(document.getElementById('time_gap').value || 15);
+        var timeUnit = document.getElementById('time_unit').value;
+        
+        // Only show preview if accounts are selected
+        if (selectedAccounts.length > 0) {
+            document.getElementById('distributionPreview').style.display = 'block';
+            
+            // Update counts
+            document.getElementById('selectedAccountsCount').textContent = selectedAccounts.length;
+            document.getElementById('totalRecipients').textContent = totalRecipients;
+            
+            // Calculate recipients per account
+            var recipientsPerAccount = Math.ceil(totalRecipients / selectedAccounts.length);
+            document.getElementById('recipientsPerAccount').textContent = recipientsPerAccount;
+            
+            // Estimate completion time
+            var minuteMultiplier = (timeUnit === 'hours') ? 60 : 1;
+            var totalMinutes = (recipientsPerAccount - 1) * timeGap * minuteMultiplier;
+            var hours = Math.floor(totalMinutes / 60);
+            var minutes = totalMinutes % 60;
+            
+            var completionTimeText = '';
+            if (hours > 0) {
+                completionTimeText += hours + ' hour' + (hours !== 1 ? 's' : '') + ' ';
+            }
+            if (minutes > 0 || hours === 0) {
+                completionTimeText += minutes + ' minute' + (minutes !== 1 ? 's' : '');
+            }
+            
+            document.getElementById('completionTime').textContent = completionTimeText;
+            
+            // Update progress bar
+            var percentage = Math.min(100, Math.round((selectedAccounts.length / totalRecipients) * 100));
+            document.querySelector('.progress-bar').style.width = percentage + '%';
+        } else {
+            document.getElementById('distributionPreview').style.display = 'none';
+        }
+    }
+});
+</script> 
